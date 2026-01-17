@@ -1,0 +1,207 @@
+/*
+ *  See Zigbee_On_Off_Light.ino for license and attribution.
+ */
+
+#include <Arduino.h>
+#include "Zigbee.h"
+
+#include "MACs.h"
+
+#ifndef ZIGBEE_MODE_ED
+  #error Zigbee end device mode is not selected in Tools->Zigbee mode
+#endif
+
+//////// User configuration //////
+///
+///  Define this when using XIAO ESP32C6 with a connected external antenna 
+///#define USE_EXTERNAL_ANTENNA 
+///
+///  GPIO pin used to control LED. Define here to override the
+///  automatic definition done below
+///#define LED_PIN xx
+///
+///  Signal level (HIGH or LOW) needed to turn on the LED. 
+///  Define here to override the automatic definition done below.
+///#define LED_ON xxx 
+///
+///  GPIO pin used by a push button that is connected to GROUND.
+///  Define here to overide the automatic use of the BOOT button.
+///#define BOOT_PIN xxxx
+///
+///  Rate of USB to Serial chip if used on the development board.
+///  This is ignored when the native USB peripheral of the 
+///  ESP SoC is used.
+///
+#define SERIAL_BAUD 115200
+///
+//////////////////////////////////
+
+
+#if !defined(ESP32)
+  #error An ESP32 based board is required
+#endif  
+
+#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 4))    
+  #error ESP32 Arduino core version 3.3.4 or newer needed
+#endif 
+
+//---- Identify the ESP32 board and antenna ----
+
+#if defined(ARDUINO_XIAO_ESP32C5)
+  #define TITLE "Seeed XIAO ESP32C5"
+  #define ANTENNA "A-01 FPC"
+#elif defined(ARDUINO_XIAO_ESP32C6)
+  // The onboard ceramic antenna is used by default.
+  #define TITLE "Seeed XIAO ESP32C6"
+  #ifdef USE_EXTERNAL_ANTENNA 
+    #define ANTENNA "EXTERNAL"
+  #else
+    #define ANTENNA "INTERNAL CERAMIC"
+  #endif
+#elif defined(ARDUINO_XIAO_ESP32C3)
+  #define TITLE "Seeed XIAO ESP32C3"
+  #define ANTENNA "V1.2 FPC"
+#elif defined(ARDUINO_XIAO_ESP32S3)
+  #define TITLE "Seeed XIAO ESP32S3"
+  #define ANTENNA "V1.2 FPC"
+#elif defined(ESP32)
+  #define TITLE "Unknown ESP32 board"
+  #define ANTENNA "Unknown"
+#else  
+  #error "An ESP32 SoC required"
+#endif        
+
+
+// Use correct builtin LED
+#if defined(RGB_BUILTIN)       // not defined in XIAO_ESP32Cx pins_arduino.h
+  #if !defined(LED_PIN)
+    #define LED_PIN RGB_BUILTIN
+  #endif
+  #if !defined(LED_ON)
+    #define LED_ON HIGH          // default for other boards in original code
+  #endif
+#elif defined(LED_BUILTIN)
+  #if !defined(LED_PIN)
+    #define LED_PIN LED_BUILTIN
+  #endif
+  #if !defined(LED_LOW)
+    #define LED_ON LOW          // because I/O pin must be grounded to turn on LED
+  #endif
+#endif
+
+
+//---- sanity checks -----------------
+
+#if !defined(LED_PIN)
+  #error LED_PIN not defined
+#endif
+
+#if !defined(LED_ON)
+  #error LED_ON not defined
+#endif
+
+#if !defined(BOOT_PIN)
+  #error BOOT_PIN not defined
+#endif
+
+#if !(ARDUINO_USB_CDC_ON_BOOT > 0) && !defined(SERIAL_BAUD)
+  #error SERIAL_BAUD not defined
+#endif
+
+//</Configuration> ---------------------
+
+uint8_t led = LED_PIN;
+uint8_t button = BOOT_PIN;
+
+/* Zigbee light bulb configuration */
+#define ZIGBEE_LIGHT_ENDPOINT 10
+
+ZigbeeLight zbLight = ZigbeeLight(ZIGBEE_LIGHT_ENDPOINT);
+
+/********************* RGB LED functions **************************/
+void setLED(bool value) { 
+  //(if LED_PIN == RGB_BUILTIN, then rgbLedWrite() will be used under the hood)
+  digitalWrite(LED_PIN, (value) ? LED_ON : 1 - LED_ON);
+}
+
+/********************* Arduino functions **************************/
+void setup() {
+  #if (ARDUINO_USB_CDC_ON_BOOT > 0)
+  Serial.begin();
+  delay(2000); 
+  #else 
+  Serial.begin(SERIAL_BAUD);
+  delay(1000);
+  Serial.println();
+  #endif  
+
+  #if defined(USE_EXTERNAL_ANTENNA) && defined(ARDUINO_XIAO_ESP32C6)
+    //pinMode(WIFI_ANT_CONFIG, OUTPUT);
+    digitalWrite(WIFI_ANT_CONFIG, HIGH);
+  #endif
+
+  Serial.println("\n\n     Project: Zigbee On/Off Light");
+  Serial.printf("       Board: %s\n", TITLE);
+  Serial.printf("     Antenna: %s\n", ANTENNA);
+  Serial.printf("IEEE Address: %s\n\n", defaultMAC().c_str());
+
+  // Init LED and turn it OFF (if LED_PIN == RGB_BUILTIN, the rgbLedWrite() will be used under the hood)
+  pinMode(led, OUTPUT);
+  //digitalWrite(led, LOW);
+  setLED(LOW);
+
+  // Init button for factory reset
+  pinMode(button, INPUT_PULLUP);
+
+  #if defined(ARDUINO_XIAO_ESP32C6) && defined(USE_EXTERNAL_ANTENNA)
+    // Assuming ESP_ARDUINO_VERSION >= 3.0.4
+    digitalWrite(WIFI_ANT_CONFIG, HIGH);
+  #endif
+
+  //Optional: set Zigbee device name and model
+  zbLight.setManufacturerAndModel("Espressif", "ZBLightBulb");
+
+  // Set callback function for light change
+  zbLight.onLightChange(setLED);
+
+  //Add endpoint to Zigbee Core
+  Serial.println("Adding ZigbeeLight endpoint to Zigbee Core");
+  Zigbee.addEndpoint(&zbLight);
+
+  // When all EPs are registered, start Zigbee. By default acts as ZIGBEE_END_DEVICE
+  if (!Zigbee.begin()) {
+    Serial.println("Zigbee failed to start!");
+    Serial.println("Rebooting...");
+    ESP.restart();
+  }
+  Serial.println("Connecting to network");
+  while (!Zigbee.connected()) {
+    Serial.print(".");
+    delay(100);
+  }
+  Serial.println("\nsetup() completed.");
+  Serial.println("Toggle the onboard LED with short boot button presses");
+  Serial.println("Perform a Zigbee factory reset and SoC reset with a");
+  Serial.println("long boot button press that is longer than 3 seconds.");
+}
+
+void loop() {
+  // Checking button for factory reset
+  if (digitalRead(button) == LOW) {  // Boot push button pressed
+    // Key debounce handling
+    delay(100);
+    int startTime = millis();
+    while (digitalRead(button) == LOW) {
+      delay(50);
+      if ((millis() - startTime) > 3000) {
+        // If button pressed for more than 3secs, factory reset Zigbee and reboot
+        Serial.println("Resetting Zigbee to factory and rebooting in 1s.");
+        delay(1000);
+        Zigbee.factoryReset();
+      }
+    }
+    // Toggle the on board LED when if button is released in less than 3 seconds
+    zbLight.setLight(!zbLight.getLightState());
+  }
+  delay(100);
+}
