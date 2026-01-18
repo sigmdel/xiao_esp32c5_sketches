@@ -45,6 +45,10 @@
   #error ESP32 Arduino core version 3.3.4 or newer needed
 #endif 
 
+#if !defined(CONFIG_SOC_IEEE802154_SUPPORTED)
+  #error The SoC must support IEEE 802.15.4 (Zigbee)
+#endif
+
 //---- Identify the ESP32 board and antenna ----
 
 #if defined(ARDUINO_XIAO_ESP32C5)
@@ -58,12 +62,6 @@
   #else
     #define ANTENNA "INTERNAL CERAMIC"
   #endif
-#elif defined(ARDUINO_XIAO_ESP32C3)
-  #define TITLE "Seeed XIAO ESP32C3"
-  #define ANTENNA "V1.2 FPC"
-#elif defined(ARDUINO_XIAO_ESP32S3)
-  #define TITLE "Seeed XIAO ESP32S3"
-  #define ANTENNA "V1.2 FPC"
 #elif defined(ESP32)
   #define TITLE "Unknown ESP32 board"
   #define ANTENNA "Unknown"
