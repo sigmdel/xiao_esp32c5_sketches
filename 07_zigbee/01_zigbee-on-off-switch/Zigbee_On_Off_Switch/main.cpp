@@ -219,8 +219,8 @@ void setup() {
     ESP.restart();
   }
 
-  Serial.println("Waiting for Light to bound to the switch");
-  //Wait for switch to bound to a light:
+  Serial.println("Waiting for Light to bind to the switch");
+  //Wait for switch to bind to a light:
   while (!zbSwitch.bound()) {
     Serial.printf(".");
     delay(500);
