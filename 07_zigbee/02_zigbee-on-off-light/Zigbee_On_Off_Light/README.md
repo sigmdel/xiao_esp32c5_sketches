@@ -22,7 +22,6 @@ This example shows how a XIAO ESP32C6 or a XIAO ESP32C5 can be Zigbee end device
   - [5.4. Troubleshooting](#54-troubleshooting)
 
 <!-- /TOC -->
-
 ---
 
 ## 1. Supported Targets
@@ -60,7 +59,7 @@ Before Compile/Verify, go to the `Tools` menu to modify the following options.
 * Optional: Set **Core Debug Level** to the desired level such as *"Verbose"* (default is *"None"*).
 * Optional: Set **Erase All Flash Before Sketch Upload** to *"Enabled"* (default is *"Disabled"*).
 
-<!-- ![IDE-Tools-screenshot](../tools_config.jpg) -->
+![IDE-Tools-screenshot](../tools_config.jpg)
 
 **XIAO ESP32C5**
 
@@ -71,8 +70,7 @@ Before Compile/Verify, go to the `Tools` menu to modify the following options.
 * Optional: Set **Core Debug Level** to the desired level such as *"Verbose"* (default is *"None"*).
 * Optional: Set **Erase All Flash Before Sketch Upload** to *"Enabled"* (default is *"Disabled"*).
 
-<!-- ![IDE-Tools-screenshot](../tools_config2.jpg) -->
-
+Same as for the XIAO ESP32C6 except for the bigger partition scheme.
 
 ### 4.2. Using PlatformIO
 

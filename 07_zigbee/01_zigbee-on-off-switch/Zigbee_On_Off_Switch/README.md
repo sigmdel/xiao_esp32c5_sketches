@@ -38,7 +38,7 @@ Currently, this example supports the following targets.
 
 ## 3. Configure the Project
 
-The sketch should work as is if uploaded to a Seeed Studio [Seeed Studio XIAO ESP32C6](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C6-p-5884.html) or the soon to be released XIAO ESP23C5. If using a XIAO ESP32C6 with a connected external antenna, please define the USE_EXTERNAL_ANTENNA macro near the beginning of the source code in the ///<User settable macros> section.
+The sketch should work as is if uploaded to a Seeed Studio [Seeed Studio XIAO ESP32C6](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C6-p-5884.html) or the soon to be released XIAO ESP23C5. If using a XIAO ESP32C6 with a connected external antenna, please define the USE_EXTERNAL_ANTENNA macro near the beginning of the source code in the `/////// User configuration ////` section. The other options in that section 
 
 The project may work with other development boards based on a supported SoC. There are macros in the ///<User settable macros> section at the beginning of the source code that can be used to override automatic definitions valid for the XIAO boards.
 
@@ -67,6 +67,8 @@ Before Compile/Verify, go to the `Tools` menu to modify the following options.
 * Set the **Zigbee mode** *"Zigbee ZCZR (coordinator/router)"*.
 * Optional: Set **Core Debug Level** to the desired level such as *"Verbose"* (default is *"None"*).
 * Optional: Set **Erase All Flash Before Sketch Upload** to *"Enabled"* (default is *"Disabled"*).
+
+Same as for the XIAO ESP32C6 except for the bigger partition scheme.
 
 ### 4.2. Using PlatformIO
 
