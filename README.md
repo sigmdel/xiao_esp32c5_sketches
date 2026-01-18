@@ -1,8 +1,8 @@
-# XIAO ESP32C6 Sketches
+# XIAO ESP32C5 Sketches
 
 *January 17, 2026*
 
-**Arduino source code that accompanies [First Look at the Seeed Studio XIAO ESP3256](<!-- https://sigmdel.ca/michel/ha/xiao/xiao_esp32c5_intro_en.html -->)**. That document will be available in a few days. More example sketches will be added over the upcoming weeks.
+**Arduino source code that accompanies [First Look at the Seeed Studio XIAO ESP32C5](<!-- https://sigmdel.ca/michel/ha/xiao/xiao_esp32c5_intro_en.html -->)**. That document will be available in a few days. More example sketches will be added over the upcoming weeks.
 
 ## Introduction
 
@@ -29,13 +29,14 @@ Install the latest Espressif ESP32 Arduino core.
 
 Arduino sketches must have an `.ino` file name extension and must be contained in a directory that has the same name as the Arduino sketch (excluding the extension). Consequently the `01_pin_names` project contains a directory named `pin_names` that in turn contains the Arduino sketch `pin_names.ino`. That sketch is basically empty as it is a long comment only. This is not a problem because the Arduino IDE will import all source files found in the sketch directory. The actual code is in `main.cpp` which is the default name of a PlatformIO project.
 
-[First Look at the Seeed Studio XIAO ESP3256](<!-- https://sigmdel.ca/michel/ha/xiao/xiao_esp32c5_intro_en.html -->) which contains some information about the XIAO ESP32C5 and the projects should be available within a few days. 
+[First Look at the Seeed Studio XIAO ESP32C5](<!-- https://sigmdel.ca/michel/ha/xiao/xiao_esp32c5_intro_en.html -->) which contains some information about the XIAO ESP32C5 and the projects should be available within a few days. 
 
 ## Change Log
 
 | Date | Change |
 | :---  |  :--- | 
 | 2026-01-17 | Initial version |
+
 
 ## License
 
