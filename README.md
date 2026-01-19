@@ -10,7 +10,7 @@
 
 The [XIAO ESP32C5](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C5-p-6609.html) is a recent addition (Jan 16, 2026) to the [Seeed Studio XIAO series](https://www.seeedstudio.com/xiao-series-page) of diminutive development boards. As with the other ESP32-C series SoC it is  based on a RISC-V core.
 
-![](images/xiao_esp32c5_pinout.jpg)
+[![](images/xiao_esp32c5_pinout.jpg)](images/xiao_esp32c5_pinout_legend.jpg)
 
 ## PlatformIO Notes
 
