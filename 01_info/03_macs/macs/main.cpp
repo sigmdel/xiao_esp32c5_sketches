@@ -2,9 +2,89 @@
  *  See macs.ino for license and attribution.
  */
 
+ /**
+Project: Print MACs
+  Board: Seeed XIAO ESP32C5
+Antenna: A-01 FPC
+
+      Default D0:CF:13:FE:FF:E2:22:8C	 getDefaultMacAddress()
+         BASE D0:CF:13:E2:22:8C		 getInterfaceMacAddress(ESP_MAC_BASE)
+    Wi-Fi STA D0:CF:13:E2:22:8C		 getInterfaceMacAddress(ESP_MAC_WIFI_STA)
+ Wi-Fi softAP D0:CF:13:E2:22:8D		 getInterfaceMacAddress(ESP_MAC_WIFI_SOFTAP)
+    Bluetooth D0:CF:13:E2:22:8E		 getInterfaceMacAddress(ESP_MAC_BT)
+     Ethernet D0:CF:13:E2:22:8F		 getInterfaceMacAddress(ESP_MAC_ETH)
+   IEEE802154 D0:CF:13:FE:FF:E2:22:8C	 getInterfaceMacAddress(IEEE802154)
+      EXT MAC FE:FF			 getInterfaceMacAddress(ESP_MAC_EFUSE_EXT)
+      Factory D0:CF:13:E2:22:8C		 getInterfaceMacAddress(ESP_MAC_EFUSE_FACTORY)
+E (4153) system_api: eFuse MAC_CUSTOM is empty
+       Custom 00:00:00:00:00:00		 getInterfaceMacAddress(ESP_MAC_EFUSE_CUSTOM)
+
+
+      Default D0:CF:13:FE:FF:E2:22:8C	 getDefaultMacAddress()
+         BASE D0:CF:13:E2:22:8C		 getInterfaceMacAddress(ESP_MAC_BASE)
+    Wi-Fi STA D0:CF:13:E2:22:8C		 getInterfaceMacAddress(ESP_MAC_WIFI_STA)
+ Wi-Fi softAP D0:CF:13:E2:22:8D		 getInterfaceMacAddress(ESP_MAC_WIFI_SOFTAP)
+    Bluetooth D0:CF:13:E2:22:8E		 getInterfaceMacAddress(ESP_MAC_BT)
+     Ethernet D0:CF:13:E2:22:8F		 getInterfaceMacAddress(ESP_MAC_ETH)
+   IEEE802154 D0:CF:13:FE:FF:E2:22:8C	 getInterfaceMacAddress(IEEE802154)
+      EXT MAC FE:FF			 getInterfaceMacAddress(ESP_MAC_EFUSE_EXT)
+      Factory D0:CF:13:E2:22:8C		 getInterfaceMacAddress(ESP_MAC_EFUSE_FACTORY)
+       Custom 00:00:00:00:00:00		 getInterfaceMacAddress(ESP_MAC_EFUSE_CUSTOM)
+
+********************************************************************************
+
+
+
+Project: Print MACs
+  Board: Seeed XIAO ESP32C6
+Antenna: INTERNAL CERAMIC
+
+      Default 54:32:04:FF:FE:11:F4:90	 getDefaultMacAddress()
+         BASE 54:32:04:11:F4:90		 getInterfaceMacAddress(ESP_MAC_BASE)
+    Wi-Fi STA 54:32:04:11:F4:90		 getInterfaceMacAddress(ESP_MAC_WIFI_STA)
+ Wi-Fi softAP 54:32:04:11:F4:91		 getInterfaceMacAddress(ESP_MAC_WIFI_SOFTAP)
+    Bluetooth 54:32:04:11:F4:92		 getInterfaceMacAddress(ESP_MAC_BT)
+     Ethernet 54:32:04:11:F4:93		 getInterfaceMacAddress(ESP_MAC_ETH)
+   IEEE802154 54:32:04:FF:FE:11:F4:90	 getInterfaceMacAddress(IEEE802154)
+      EXT MAC FF:FE			 getInterfaceMacAddress(ESP_MAC_EFUSE_EXT)
+      Factory 54:32:04:11:F4:90		 getInterfaceMacAddress(ESP_MAC_EFUSE_FACTORY)
+E (2139) system_api: eFuse MAC_CUSTOM is empty
+       Custom 00:00:00:00:00:00		 getInterfaceMacAddress(ESP_MAC_EFUSE_CUSTOM)
+
+
+      Default 54:32:04:FF:FE:11:F4:90	 getDefaultMacAddress()
+         BASE 54:32:04:11:F4:90		 getInterfaceMacAddress(ESP_MAC_BASE)
+    Wi-Fi STA 54:32:04:11:F4:90		 getInterfaceMacAddress(ESP_MAC_WIFI_STA)
+ Wi-Fi softAP 54:32:04:11:F4:91		 getInterfaceMacAddress(ESP_MAC_WIFI_SOFTAP)
+    Bluetooth 54:32:04:11:F4:92		 getInterfaceMacAddress(ESP_MAC_BT)
+     Ethernet 54:32:04:11:F4:93		 getInterfaceMacAddress(ESP_MAC_ETH)
+   IEEE802154 54:32:04:FF:FE:11:F4:90	 getInterfaceMacAddress(IEEE802154)
+      EXT MAC FF:FE			 getInterfaceMacAddress(ESP_MAC_EFUSE_EXT)
+      Factory 54:32:04:11:F4:90		 getInterfaceMacAddress(ESP_MAC_EFUSE_FACTORY)
+E (12145) system_api: eFuse MAC_CUSTOM is empty
+       Custom 00:00:00:00:00:00		 getInterfaceMacAddress(ESP_MAC_EFUSE_CUSTOM)
+
+
+      Default 54:32:04:FF:FE:11:F4:90	 getDefaultMacAddress()
+         BASE 54:32:04:11:F4:90		 getInterfaceMacAddress(ESP_MAC_BASE)
+    Wi-Fi STA 54:32:04:11:F4:90		 getInterfaceMacAddress(ESP_MAC_WIFI_STA)
+ Wi-Fi softAP 54:32:04:11:F4:91		 getInterfaceMacAddress(ESP_MAC_WIFI_SOFTAP)
+    Bluetooth 54:32:04:11:F4:92		 getInterfaceMacAddress(ESP_MAC_BT)
+     Ethernet 54:32:04:11:F4:93		 getInterfaceMacAddress(ESP_MAC_ETH)
+   IEEE802154 54:32:04:FF:FE:11:F4:90	 getInterfaceMacAddress(IEEE802154)
+      EXT MAC FF:FE			 getInterfaceMacAddress(ESP_MAC_EFUSE_EXT)
+      Factory 54:32:04:11:F4:90		 getInterfaceMacAddress(ESP_MAC_EFUSE_FACTORY)
+E (22151) system_api: eFuse MAC_CUSTOM is empty
+       Custom 00:00:00:00:00:00		 getInterfaceMacAddress(ESP_MAC_EFUSE_CUSTOM)
+
+
+ */
+
 #include <Arduino.h>
 
 #include "MACs.h"
+
+#include <exception>
 
 //////// User configuration //////
 ///
@@ -54,13 +134,19 @@
 
 void printMACS(void) {
   Serial.println("\n");
-  Serial.printf("      Default MAC %s\n", defaultMAC().c_str()); // can be 8 or 6 bytes 
-  Serial.printf("         Base MAC %s\n", baseMAC().c_str());    // 6 bytes 
-  Serial.printf("    Wi-Fi STA MAC %s\n", staMAC().c_str());     // administered address, 6 bytes
-  Serial.printf("Wi-Fi soft AP MAC %s\n", softapMAC().c_str());  // administered address, 6 bytes
-  Serial.printf("Bluetooth BD_ADDR %s\n", btMAC().c_str());      // administered address, 6 bytes
-  Serial.printf("     Ethernet MAC %s\n", etherMAC().c_str());   // administered address, 6 bytes
-}  
+  Serial.printf("      Default %s\t getDefaultMacAddress()\n", getDefaultMacAddress().c_str()); // can be 8 or 6 bytes 
+  Serial.printf("         BASE %s\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_BASE).c_str(), "ESP_MAC_BASE");     
+  Serial.printf("    Wi-Fi STA %s\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_WIFI_STA).c_str(), "ESP_MAC_WIFI_STA");        // administered address, 6 bytes
+  Serial.printf(" Wi-Fi softAP %s\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_WIFI_SOFTAP).c_str(), "ESP_MAC_WIFI_SOFTAP");  // administered address, 6 bytes
+  Serial.printf("    Bluetooth %s\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_BT).c_str(), "ESP_MAC_BT");                    // administered address, 6 bytes
+  Serial.printf("     Ethernet %s\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_ETH).c_str(), "ESP_MAC_ETH");                  // administered address, 6 bytes
+
+  Serial.printf("   IEEE802154 %s\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_IEEE802154).c_str(), "IEEE802154");    
+  Serial.printf("      EXT MAC %s\t\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_EFUSE_EXT).c_str(), "ESP_MAC_EFUSE_EXT");  
+
+  Serial.printf("      Factory %s\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_EFUSE_FACTORY).c_str(), "ESP_MAC_EFUSE_FACTORY");
+  Serial.printf("       Custom %s\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_EFUSE_CUSTOM).c_str(), "ESP_MAC_EFUSE_CUSTOM"); 
+}
 
 void setup() {
   #if (ARDUINO_USB_CDC_ON_BOOT > 0)
