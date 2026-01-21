@@ -1,7 +1,6 @@
 /*
  * blink.ino
- * Blinks in a heartbeat pattern every pin around a XIAO ESP32C5
- * board.
+ * Blinks every pin around a XIAO ESP32C5 board in a heartbeat pattern.
  *
  * Starts with pin D0 and goes around the board counterclockwise.
  * The builtin in user LED is also blinked.

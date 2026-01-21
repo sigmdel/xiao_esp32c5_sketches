@@ -1,6 +1,6 @@
 /*
  * deep_sleep_io.ino
- * Testing waking the SoC from deep sleep with high or low signal to i/o pin wake pins
+ * Wake the XIAO ESP32C5 from deep sleep mode with a high or low signal to i/o pins
  *
  * Targets are the XIAO boards based on ESP32-C family of SoC. Other boards based 
  * on an ESP32-Cx SoC will have to be added manually in the 

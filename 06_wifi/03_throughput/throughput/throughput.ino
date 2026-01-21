@@ -1,6 +1,6 @@
 /*
  * throughput.ino
- * This sketch tests the Wi-Fi download speed of an ESP32 device.
+ * Measure the Wi-Fi download speed on 2.4GHz and 5GHz bands of a XIAO ESP32C5.
  * 
  * This is a stub to satisfy the Arduino IDE. The source code is 
  * in the file main.cpp in the same directory.

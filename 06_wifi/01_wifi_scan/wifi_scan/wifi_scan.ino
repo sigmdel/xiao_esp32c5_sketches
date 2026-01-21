@@ -1,5 +1,7 @@
 /*
  * wifi_scan.ino
+ * Scan Wi-Fi networks combining and segregating 2.4GHz and 5GHz bands.
+ *
  * This sketch demonstrates how to scan WiFi networks. For chips that 
  * support 5GHz band, separate scans are done for all bands. The API is 
  * based on the Arduino WiFi Shield library, but has significant 
@@ -37,6 +39,8 @@
  * A fix already exits 
  *  @https://github.com/espressif/arduino-esp32/pull/12202 so the error 
  * should not occur in future releases of the Arduino core for the ESP32.
+ *
+ * FIXED in release candidate 1 of version 3.3.6.
  */    
     
 

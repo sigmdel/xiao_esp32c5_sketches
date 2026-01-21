@@ -1,6 +1,6 @@
 /*
  * adc_dvm.ino
- * Testing the A0 analog input of the XIAO ESP32C5.
+ * Measuring the A0 analog input of the XIAO ESP32C5.
  *
  * This is a stub to satisfy the Arduino IDE, the source code is in
  * the main.cpp file in the same directory.

@@ -1,7 +1,9 @@
 /*
  * pwm.ino
+ * Pulses every pin around a XIAO ESP32C5 board using pulse width modulation.
+ *
  * Applies a pulse width modulation signal with varying duty cycle to every pin 
- * around a XIAO ESP32C5 board. In other words the average voltage of each  pin
+ * around a XIAO ESP32C5 board. In other words the average voltage of each pin
  * pulses.
  *
  * Starts with pin D0 and goes around the board counterclockwise.
