@@ -4,10 +4,42 @@
 
 #include <Arduino.h>
 
+//////// User configuration //////
+///
+///  Define if a custom MAC address was burned in ESP32 fuse memory
+///#define HAS_CUSTOM_MAC
+///
+///  Define this when using XIAO ESP32C6 with a connected external antenna 
+///#define USE_EXTERNAL_ANTENNA 
+///
+///  Rate of USB to Serial chip if used on the development board.
+///  This is ignored when the native USB peripheral of the 
+///  ESP SoC is used.
+#define SERIAL_BAUD 115200
+///
+///  Time in milliseconds to wait after Serial.begin() in 
+///  the setup() function. If not defined, it will be set
+///  to 5000 if running in the PlaformIO IDE to manually switch
+///  to the serial monitor otherwise to 2000 if an native USB 
+///  peripheral is used or 1000 if a USB-serial adpater is used.
+///*define SERIAL_BEGIN_DELAY 8000
+///
+//////////////////////////////////
 
 #if !defined(ARDUINO_XIAO_ESP32C5)
   #error "This program is meant to run on the XIAO ESP32C5"
 #endif
+
+#if !defined(SERIAL_BEGIN_DELAY)
+  #if defined(PLATFORMIO)
+    #define SERIAL_BEGIN_DELAY 5000    // 5 seconds
+  #elif (ARDUINO_USB_CDC_ON_BOOT > 0)
+    #define SERIAL_BEGIN_DELAY 2000    // 2 seconds
+  #else
+    #define SERIAL_BEGIN_DELAY 1000    // 1 second
+  #endif
+#endif 
+
 
 // XIAO ESP32C5 dev board edge pads layout.
 //
@@ -66,7 +98,7 @@ void setPinMode(int mode) {
 
 void setup() {
   Serial.begin(); // 
-  delay(2000); // 2 second delay should be sufficient for USB-CDC
+  delay(SERIAL_BEGIN_DELAY);
 
   Serial.println("\n\nProject: poll all i/o pins");
   Serial.println("  Board: XIAO ESP32C5");
