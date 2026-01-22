@@ -1,25 +1,37 @@
 # Seeed Studio XIAO ESP3256 Board Definition in PlatformIO/pioarduino 
 
-The latest stable (55.03.36) branch of the [pioarduino](https://github.com/pioarduino/platform-espressif32) platform does not contain a board definition for the XIAO ESP32C5. This directory contains a proposed definition `seeed_xiao_esp32c5.json`. <!-- which has been successfully tested with all the projects in the repository-->
+The latest stable (55.03.36) branch of the [pioarduino](https://github.com/pioarduino/platform-espressif32) platform does not contain a board definition for the XIAO ESP32C5. This directory contains a proposed definition, 
+[seeed_xiao_esp32c5.json](seeed_xiao_esp32c5.json), which has been successfully tested with all the projects in the repository.
 
-To use the [boards/seeed_xiao_esp32c6.json](seeed_xiao_esp32c6.json) definition in a PlatformIO project, add the following line in the project configuration file (`platformio.ini`): `boards_dir = ../boards`. Here is a typical example.
+To use this board definition in a PlatformIO project, add the following line in the `[platformio]` section of the project configuration file: 
+```
+[platformio]
+boards_dir = <relative_path_of_boards_dir>
+...
+```
+Relative here is with respect to the directory containing the `platformio.ini` configuration file. Here is a typical example taken from a sketch in the repository.
 
 ```ini
 [platformio]
-boards_dir = ../boards
-
+; Make the Arduino IDE happy (.INO file must be in a directory of the same name)
+src_dir = blink
+boards_dir = ../../boards   ;; .../xiao_esp32c5_sketches/boards/
+lib_dir = ../../libraries   ;; .../xiao_esp32c5_sketches/libraries/                     
+                            ;; .../xiao_esp32c5_sketches/02_digital_io/01_blink/platformio.ini
 [env:seeed_xiao_esp32c5]
-platform = https://github.com/pioarduino/platform-espressif32/releases/download/51.03.07/platform-espressif32.zip
+platform = https://github.com/pioarduino/platform-espressif32/releases/download/stable/platform-espressif32.zip
 board = seeed_xiao_esp32c5
 framework = arduino
-...
+monitor_speed = 460800   
 ```
 
 
-## Credit
+## Sources
 
-This board definition is a mash-up of two existing definitions: 
+This board definition is a blend of two existing definitions: 
 
-  `~/.platformio/platforms/espressif32/boards/seeed_xiao_esp32c6.json`
+  1.  `~/.platformio/platforms/espressif32/boards/seeed_xiao_esp32c6.json`
 
-  `~/.platformio/platforms/espressif32/boards/esp32-c5-devkitc1-n8r4.json`
+  2.  `~/.platformio/platforms/espressif32/boards/esp32-c5-devkitc1-n8r4.json`
+
+Hopefully, it is correct.
