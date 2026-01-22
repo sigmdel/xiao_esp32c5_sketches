@@ -45,6 +45,6 @@
     "require_upload_port": true,
     "speed": 460800
   },
-  "url": "https://wiki.seeedstudio.com/XIAO_ESP32C5_Getting_Started/",
+  "url": "https://wiki.seeedstudio.com/xiao_esp32c5_getting_started/",
   "vendor": "Seeed Studio"
 }
