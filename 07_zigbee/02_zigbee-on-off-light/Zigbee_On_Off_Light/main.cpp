@@ -141,7 +141,7 @@ void setup() {
   Serial.println("\n\n     Project: Zigbee On/Off Light");
   Serial.printf("       Board: %s\n", TITLE);
   Serial.printf("     Antenna: %s\n", ANTENNA);
-  Serial.printf("IEEE Address: %s\n\n", defaultMAC().c_str());
+  Serial.printf("IEEE Address: %s\n\n", ZIGBEE_MAC_STR);
 
   // Init LED and turn it OFF (if LED_PIN == RGB_BUILTIN, the rgbLedWrite() will be used under the hood)
   pinMode(led, OUTPUT);

@@ -71,8 +71,7 @@ void setup() {
 
   Serial.println("\n\nProject: Wi-Fi Scan");
   Serial.printf("  Board: %s\n", TITLE);
-  Serial.print("STA MAC: ");
-  Serial.println(staMAC());
+  Serial.printf("STA MAC: %s\n", STA_MAC_STR);
   Serial.printf("Antenna: %s\n\n", ANTENNA);
   
   #if defined(ARDUINO_XIAO_ESP32C5) && (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 6))  // assuming this is fixed in 3.3.6

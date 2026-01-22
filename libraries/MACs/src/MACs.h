@@ -31,3 +31,21 @@ esp_mac_type_t values:
 extern String getDefaultMacAddress();
 extern String getInterfaceMacAddress(esp_mac_type_t interface);
 
+
+// Macro definitions for most common interfaces, returns String
+
+#define STA_MAC getInterfaceMacAddress(ESP_MAC_WIFI_STA)
+#define SOFTAP_MAC getInterfaceMacAddress(ESP_MAC_WIFI_SOFTAP)
+#define BT_MAC getInterfaceMacAddress(ESP_MAC_BT)
+#define ETH_MAC getInterfaceMacAddress(ESP_MAC_ETH)
+#define ZIGBEE_MAC getInterfaceMacAddress(ESP_MAC_IEEE802154)    // no way I would remember IEEE802154_MAC
+
+
+// Macro definitions for most common interfaces, returns C string
+
+#define STA_MAC_STR getInterfaceMacAddress(ESP_MAC_WIFI_STA).c_str()
+#define SOFTAP_MAC_STR getInterfaceMacAddress(ESP_MAC_WIFI_SOFTAP).c_str()
+#define BT_MAC_STR getInterfaceMacAddress(ESP_MAC_BT).c_str()
+#define ETH_MAC_STR getInterfaceMacAddress(ESP_MAC_ETH).c_str()
+#define ZIGBEE_MAC_STR getInterfaceMacAddress(ESP_MAC_IEEE802154).c_str() 
+

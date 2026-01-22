@@ -181,7 +181,7 @@ void setup() {
   Serial.println("\n\n     Project: Zigbee On/Off Switch");
   Serial.printf("       Board: %s\n", TITLE);
   Serial.printf("     Antenna: %s\n", ANTENNA);
-  Serial.printf("IEEE Address: %s\n\n", defaultMAC().c_str());
+  Serial.printf("IEEE Address: %s\n\n", ZIGBEE_MAC_STR);
 
   //Optional: set Zigbee device name and model
   zbSwitch.setManufacturerAndModel("Espressif", "ZigbeeSwitch");

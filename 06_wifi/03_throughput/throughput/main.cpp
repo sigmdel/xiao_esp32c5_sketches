@@ -104,8 +104,7 @@ void setup() {
   Serial.println("\n\nProject: Wi-Fi Throughput");
   Serial.println(" Source: https://tutoduino.fr/en/esp32-wifi-performance/");
   Serial.printf("  Board: %s\n", TITLE);
-  Serial.print("STA MAC: ");
-  Serial.println(staMAC());
+  Serial.printf("STA MAC: %s\n", STA_MAC_STR);
   Serial.printf("Antenna: %s\n\n", ANTENNA);
 
   // Connect to WiFi access point

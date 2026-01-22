@@ -88,6 +88,9 @@ E (22151) system_api: eFuse MAC_CUSTOM is empty
 
 //////// User configuration //////
 ///
+///  Define if a custom MAC address was burned in ESP32 fuse memory
+///#define HAS_CUSTOM_MAC
+///
 ///  Define this when using XIAO ESP32C6 with a connected external antenna 
 ///#define USE_EXTERNAL_ANTENNA 
 ///
@@ -133,19 +136,41 @@ E (22151) system_api: eFuse MAC_CUSTOM is empty
 #endif        
 
 void printMACS(void) {
-  Serial.println("\n");
-  Serial.printf("      Default %s\t getDefaultMacAddress()\n", getDefaultMacAddress().c_str()); // can be 8 or 6 bytes 
-  Serial.printf("         BASE %s\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_BASE).c_str(), "ESP_MAC_BASE");     
-  Serial.printf("    Wi-Fi STA %s\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_WIFI_STA).c_str(), "ESP_MAC_WIFI_STA");        // administered address, 6 bytes
-  Serial.printf(" Wi-Fi softAP %s\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_WIFI_SOFTAP).c_str(), "ESP_MAC_WIFI_SOFTAP");  // administered address, 6 bytes
-  Serial.printf("    Bluetooth %s\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_BT).c_str(), "ESP_MAC_BT");                    // administered address, 6 bytes
-  Serial.printf("     Ethernet %s\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_ETH).c_str(), "ESP_MAC_ETH");                  // administered address, 6 bytes
+  Serial.println("\n\nMAC Adresses-----------------------------------------------------------------------------");
+  Serial.printf("      Default %-23s  uses getDefaultMacAddress()\n",     getDefaultMacAddress().c_str()); // can be 8 or 6 bytes 
+  Serial.printf("         BASE %-23s  uses getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_BASE).c_str(), "ESP_MAC_BASE");     
+  Serial.printf("    Wi-Fi STA %-23s  uses getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_WIFI_STA).c_str(), "ESP_MAC_WIFI_STA");        // administered address, 6 bytes
+  
+  Serial.printf(" Wi-Fi softAP %-23s  uses getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_WIFI_SOFTAP).c_str(), "ESP_MAC_WIFI_SOFTAP");  // administered address, 6 bytes
+  Serial.printf("    Bluetooth %-23s  uses getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_BT).c_str(), "ESP_MAC_BT");                    // administered address, 6 bytes
+  Serial.printf("     Ethernet %-23s  uses getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_ETH).c_str(), "ESP_MAC_ETH");                  // administered address, 6 bytes
 
-  Serial.printf("   IEEE802154 %s\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_IEEE802154).c_str(), "IEEE802154");    
-  Serial.printf("      EXT MAC %s\t\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_EFUSE_EXT).c_str(), "ESP_MAC_EFUSE_EXT");  
+  Serial.printf("   IEEE802154 %-23s  uses getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_IEEE802154).c_str(), "IEEE802154");    
+  Serial.printf("      EXT MAC %-23s  uses getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_EFUSE_EXT).c_str(), "ESP_MAC_EFUSE_EXT");  
 
-  Serial.printf("      Factory %s\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_EFUSE_FACTORY).c_str(), "ESP_MAC_EFUSE_FACTORY");
-  Serial.printf("       Custom %s\t\t getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_EFUSE_CUSTOM).c_str(), "ESP_MAC_EFUSE_CUSTOM"); 
+  Serial.printf("      Factory %-23s  uses getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_EFUSE_FACTORY).c_str(), "ESP_MAC_EFUSE_FACTORY");
+  #ifdef HAS_CUSTOM_MAC
+  Serial.printf("       Custom %-23s  uses getInterfaceMacAddress(%s)\n", getInterfaceMacAddress(ESP_MAC_EFUSE_CUSTOM).c_str(), "ESP_MAC_EFUSE_CUSTOM"); 
+  #else
+  Serial.printf("       Custom %-23s  no custom MAC in eFuse bits\n", " ");
+  #endif
+  Serial.println(    "-----------------------------------------------------------------------------------------");
+
+  Serial.println("\nMacros-----------------------------------------------------------------------------------");
+  Serial.printf("    Wi-Fi STA %-23s  uses STAT_MAC.c_str()\n", STA_MAC.c_str());
+  Serial.printf(" Wi-Fi softAP %-23s  uses SOFTAP_MAC.c_str(()\n", SOFTAP_MAC.c_str());
+  Serial.printf("    Bluetooth %-23s  uses BT_MAC.c_str()\n", BT_MAC.c_str());
+  Serial.printf("     Ethernet %-23s  uses ETH_MAC.c_str()\n", ETH_MAC.c_str());
+  Serial.printf("   IEEE802154 %-23s  uses ZIGBEE_MAC.c_str()\n", ZIGBEE_MAC.c_str());
+  Serial.println(  "-----------------------------------------------------------------------------------------");
+
+  Serial.println("\nMacros-----------------------------------------------------------------------------------");
+  Serial.printf("    Wi-Fi STA %-23s  uses STAT_MAC_STR\n", STA_MAC_STR);
+  Serial.printf(" Wi-Fi softAP %-23s  uses SOFTAP_MAC_STR\n", SOFTAP_MAC_STR);
+  Serial.printf("    Bluetooth %-23s  uses BT_MAC_STR\n", BT_MAC_STR);
+  Serial.printf("     Ethernet %-23s  uses ETH_MAC_STR\n", ETH_MAC_STR);
+  Serial.printf("   IEEE802154 %-23s  uses ZIGBEE_MAC_STR\n", ZIGBEE_MAC_STR);
+  Serial.println(  "-----------------------------------------------------------------------------------------");
 }
 
 void setup() {
@@ -169,6 +194,7 @@ void setup() {
 
 void loop() {
   printMACS();
+  //Serial.printf("Custom MAC address: \"%s\"\n\n", getInterfaceMacAddress(ESP_MAC_EFUSE_CUSTOM).c_str()); 
   delay(10000);
 }
                                                 

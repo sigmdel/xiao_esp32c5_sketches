@@ -94,8 +94,7 @@ void setup() {
 
   Serial.println("\n\nProject: Bluetooth LE Server");
   Serial.printf("  Board: %s\n", TITLE);
-  Serial.print( "BLE MAC: ");
-  Serial.println(bleMAC());
+  Serial.printf("BLE MAC: %s\n", BT_MAC_STR);
   Serial.printf("Antenna: %s\n\n", ANTENNA);
    
   // 1. Initialize BLE
