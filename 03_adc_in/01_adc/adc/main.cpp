@@ -26,10 +26,29 @@
 ///  ESP SoC is used.
 #define SERIAL_BAUD 115200
 ///
+///  Time in milliseconds to wait after Serial.begin() in 
+///  the setup() function. If not defined, it will be set
+///  to 5000 if running in the PlaformIO IDE to manually switch
+///  to the serial monitor otherwise to 2000 if an native USB 
+///  peripheral is used or 1000 if a USB-serial adpater is used.
+///*define SERIAL_BEGIN_DELAY 8000
+///
 //////////////////////////////////
 
 
+#if !defined(ARDUINO_XIAO_ESP32C5)
+  #error "This program is meant to run on the XIAO ESP32C5"
+#endif
 
+#if !defined(SERIAL_BEGIN_DELAY)
+  #if defined(PLATFORMIO)
+    #define SERIAL_BEGIN_DELAY 5000    // 5 seconds
+  #elif (ARDUINO_USB_CDC_ON_BOOT > 0)
+    #define SERIAL_BEGIN_DELAY 2000    // 2 seconds
+  #else
+    #define SERIAL_BEGIN_DELAY 1000    // 1 second
+  #endif
+#endif 
 
 // timing constants all in milliseconds
 
@@ -37,10 +56,6 @@ const int activeperiod  = ACTIVE_PERIOD;   // time during which the current io p
 const int blankperiod   = INACTIVE_PERIOD; // time during which no io pin is active
 
 unsigned long activetimer = 0;  // used to time active period
-
-#if !defined(ARDUINO_XIAO_ESP32C5)
-  #error "This program is meant to run on the XIAO ESP32C5"
-#endif
 
 // Checking XIAO ESP32C5 div board with USB connector at top, antenna connector at bottom.
 // Probe each pad in anti-clockwise fashion starting at top left pad labeled D0 (on the underside)
@@ -71,8 +86,7 @@ void setindex(int i) {
 
 void setup() {
   Serial.begin(); // 
-  delay(2000); // 2 second delay should be sufficient for USB-CDC
-
+  delay(SERIAL_BEGIN_DELAY);
   Serial.println("\n\nCheck the adc function of the analogue GPIO pins of an XIAO ESP32C5.\n");
   Serial.println("There's only one analogue pin on the top side of the XIAO: A0 near the charge LED.");
   Serial.println("The other A1 to A4 connections, labeled MTMS, MTDI, MTCK and MTDO, are");
