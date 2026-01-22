@@ -4,10 +4,35 @@
 
 #include <Arduino.h>
 
+//////// User configuration //////
+///
+///  Rate of USB to Serial chip if used on the development board.
+///  This is ignored when the native USB peripheral of the 
+///  ESP SoC is used.
+#define SERIAL_BAUD 115200
+///
+///  Time in milliseconds to wait after Serial.begin() in 
+///  the setup() function. If not defined, it will be set
+///  to 5000 if running in the PlaformIO IDE to manually switch
+///  to the serial monitor otherwise to 2000 if an native USB 
+///  peripheral is used or 1000 if a USB-serial adpater is used.
+///*define SERIAL_BEGIN_DELAY 8000
+///
+//////////////////////////////////
+
 #if !defined(ARDUINO_XIAO_ESP32C5)
   #error "This program is meant to run on the XIAO ESP32C5 only"
 #endif
 
+#if !defined(SERIAL_BEGIN_DELAY)
+  #if defined(PLATFORMIO)
+    #define SERIAL_BEGIN_DELAY 5000    // 5 seconds
+  #elif (ARDUINO_USB_CDC_ON_BOOT > 0)
+    #define SERIAL_BEGIN_DELAY 2000    // 2 seconds
+  #else
+    #define SERIAL_BEGIN_DELAY 1000    // 1 second
+  #endif
+#endif
 void iopins(void) {
   Serial.println("\n\nXIAO ESP32C5 I/O Pin Names and Numbers"); 
   Serial.println("BOOT_PIN defined in esp32-hal.h all others in pins_arduino.h");
@@ -103,9 +128,14 @@ void iopins(void) {
 }
 
 void setup() {
+  #if (ARDUINO_USB_CDC_ON_BOOT > 0)
   Serial.begin();
-  delay(2000); // 2 second delay should be sufficient for USB-CDC
-  Serial.println("Setup completed");
+  delay(SERIAL_BEGIN_DELAY);
+  #else 
+  Serial.begin(SERIAL_BAUD);
+  delay(SERIAL_BEGIN_DELAY);
+  Serial.println();
+  #endif  
 }
 
 void loop() {
