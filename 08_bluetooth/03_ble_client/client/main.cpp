@@ -21,8 +21,14 @@
 ///  ESP SoC is used.
 #define SERIAL_BAUD 115200
 ///
+///  Time in milliseconds to wait after Serial.begin() in 
+///  the setup() function. If not defined, it will be set
+///  to 5000 if running in the PlaformIO IDE to manually switch
+///  to the serial monitor otherwise to 2000 if an native USB 
+///  peripheral is used or 1000 if a USB-serial adpater is used.
+///*define SERIAL_BEGIN_DELAY 8000
+///
 //////////////////////////////////
-
 
 #if !defined(ESP32)
   #error An ESP32 based board is required
@@ -30,6 +36,16 @@
 
 #if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 4))    
   #error ESP32 Arduino core version 3.3.4 or newer needed
+#endif 
+
+#if !defined(SERIAL_BEGIN_DELAY)
+  #if defined(PLATFORMIO)
+    #define SERIAL_BEGIN_DELAY 5000    // 5 seconds
+  #elif (ARDUINO_USB_CDC_ON_BOOT > 0)
+    #define SERIAL_BEGIN_DELAY 2000    // 2 seconds
+  #else
+    #define SERIAL_BEGIN_DELAY 1000    // 1 second
+  #endif
 #endif 
 
 //---- Identify the ESP32 board and antenna ----
@@ -156,10 +172,10 @@ void scanAndConnect() {
 void setup() {
   #if (ARDUINO_USB_CDC_ON_BOOT > 0)
   Serial.begin();
-  delay(2000); 
+  delay(SERIAL_BEGIN_DELAY);
   #else 
   Serial.begin(SERIAL_BAUD);
-  delay(1000);
+  delay(SERIAL_BEGIN_DELAY);
   Serial.println();
   #endif  
 
