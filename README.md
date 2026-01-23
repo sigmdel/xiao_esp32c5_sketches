@@ -10,7 +10,9 @@
 <!-- TOC -->
 
 - [1. Introduction](#1-introduction)
-- [2. PlatformIO Notes](#2-platformio-notes)
+- [2. PlatformIO/pioarduino Notes](#2-platformiopioarduino-notes)
+  - [2.1. Using PlatformIO and the Seeed Studio platform](#21-using-platformio-and-the-seeed-studio-platform)
+  - [2.2. Why was PlatfomrmIO and the Seeed Studio platform not used](#22-why-was-platfomrmio-and-the-seeed-studio-platform-not-used)
 - [3. Arduino IDE Notes](#3-arduino-ide-notes)
 - [4. Sketches/Projects](#4-sketchesprojects)
   - [4.1. ./01_info](#41-01_info)
@@ -34,11 +36,36 @@ The [XIAO ESP32C5](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C5-p-6609.
 
 ## 2. PlatformIO/pioarduino Notes
 
-All of the sketches in the repository have been successfully compiled with the [pioarduino-espressif32](https://github.com/pioarduino/platform-espressif32). The January 21, 2026 version of [pioarduino/platform-espressif Release 55.03.36 Arduino Release v3.3.6 based on ESP-IDF v5.5.2.260116](https://github.com/pioarduino/platform-espressif32/releases/tag/55.03.36) was used. 
+All of the sketches in the repository have been successfully compiled with the [pioarduino-espressif32](https://github.com/pioarduino/platform-espressif32) platform. The January 21, 2026 version of [pioarduino/platform-espressif Release 55.03.36 Arduino Release v3.3.6 based on ESP-IDF v5.5.2.260116](https://github.com/pioarduino/platform-espressif32/releases/tag/55.03.36) was used. 
 
-The platform does not contain a board definition for the XIAO ESP32C5, nor could one be found elsewhere. Consequently, one was created and a private copy was added in this repository: [boards/seeed_xiao_esp32c5.json](boards/seeed_xiao_esp32c5.json). All the configuration files were updated to reflect the URL of the platform and the private boards directory to use. 
+The platform does not contain a board definition for the XIAO ESP32C5. A board definition, named [seeed_xiao_esp32c5.json](boards/seeed_xiao_esp32c5.json), is provided in the `boards` directory. See thee [README](boards/README.md) about the source of that definition. All the configuration files were updated to reflect the URL of the platform and the private boards directory to use. 
 
-The latest version of the [piorduino IDE](https://github.com/pioarduino/pioarduino-vscode-ide), which is a fork of the PlatformIO IDE, can be installed as an extension in Visual Studio Code [VS&nbsp;Code](https://code.visualstudio.com/), [VSCODIUM](https://vscodium.com/), and perhaps other development environments. Since the extension is available in the respective Marketplace of both VS&nbsp;CODE and VSCODIUM, the installation only requires a few mouse clicks.
+### 2.1. Using PlatformIO and the Seeed Studio platform
+
+Users of Visual Studio Code [VS&nbsp;Code](https://code.visualstudio.com/) may prefer to install the PlatformIO IDE which is available in the VS CODE extension marketplace. In that case, the appropriate `platform` and `board` values in the `platformio.ini` configuration files would be as follows.
+
+```ini
+[env:stable]
+platform = Seeed Studio
+board = seeed-xiao-esp32-c5.json
+...
+```
+
+or
+
+```ini
+[env:development]
+platform = https://github.com/Seeed-Studio/platform-seeedboards.git
+board = seeed-xiao-esp32-c5.json
+...
+```
+
+This will automatically install the [Seeed Studio platform-seeedboard](https://github.com/Seeed-Studio/platform-seeedboards) platform.
+
+### 2.2. Why was the Seeed Studio platform not used
+
+The PlatformIO IDE is not available in the [VSCODIUM](https://vscodium.com/) extension marketplace and it seems that it is no longer possible to install it manually. On the other hand, the [piorduino IDE](https://github.com/pioarduino/pioarduino-vscode-ide), which is a fork of the PlatformIO IDE, is available in the [VSCODIUM](https://vscodium.com/) extension marketplace and installs with a few mouse clicks. Since the author of this repository prefers VSCODIUM to VS CODE, the `piorduino IDE` is used along with the `pioarduino-espressif32` platform. Unfortunately, it was not possible to install [Seeed-Studio/platform-seeedboards](https://github.com/Seeed-Studio/platform-seeedboards) alongside the `pioarduino-espressif32` platform. This could very well be a user problem, but until it is solved the author cannot use the Seeed Studio platform.
+
 
 ## 3. Arduino IDE Notes
 
@@ -132,9 +159,9 @@ Contains 3 slightly modified examples from the ESP32 Arduino BLE library.
 
  | Project | Description |
  | :--- |  :--- |
-| *ble_scan* | Library example (Scan.ino) with adjustments for the XIAO ESP32C5 and XIAO ESP32C6. |
-| *server* | Library example (Server.ino) with adjustments for the XIAO ESP32C5 and XIAO ESP32C6. |
-| *client* |  Library example (Client.ino) with adjustments for the XIAO ESP32C5 and XIAO ESP32C6. |
+ | *ble_scan* | Library example (Scan.ino) with adjustments for the XIAO ESP32C5 and XIAO ESP32C6. |
+ | *server* | Library example (Server.ino) with adjustments for the XIAO ESP32C5 and XIAO ESP32C6. |
+ | *client* |  Library example (Client.ino) with adjustments for the XIAO ESP32C5 and XIAO ESP32C6. |
 
 
 ## 5. Change Log
