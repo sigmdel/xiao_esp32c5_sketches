@@ -25,13 +25,12 @@ framework = arduino
 monitor_speed = 460800   
 ```
 
-
 ## Sources
 
 This board definition is a blend of two existing definitions: 
 
-  1.  `~/.platformio/platforms/espressif32/boards/seeed_xiao_esp32c6.json`
+  1.  [seeed-xiao-esp32-c5.json](https://github.com/Seeed-Studio/platform-seeedboards/blob/main/boards/seeed-xiao-esp32-c5.json)
 
-  2.  `~/.platformio/platforms/espressif32/boards/esp32-c5-devkitc1-n8r4.json`
+  2.  [esp32-c5-devkitc1-n8r4.json](https://github.com/pioarduino/platform-espressif32/blob/main/boards/esp32-c5-devkitc1-n8r4.json)
 
-Hopefully, it is correct.
+These two definitions are also in the directory, to make it easy to compare them with the proposed [seeed_xiao_esp32c5.json](seeed_xiao_esp32c5.json). Hopefully, it is correct.
