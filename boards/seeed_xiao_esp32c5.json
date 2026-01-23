@@ -1,7 +1,7 @@
 {
   "build": {
     "arduino": {
-        "ldscript": "esp32c5_out.ld"
+        "ldscript": "esp32c5_out.ld",
         "partitions": "default_8MB.csv",
         "memory_type": "qio_qspi"
     },
