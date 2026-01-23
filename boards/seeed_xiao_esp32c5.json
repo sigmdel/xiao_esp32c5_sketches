@@ -1,6 +1,7 @@
 {
   "build": {
     "arduino": {
+        "ldscript": "esp32c5_out.ld"
         "partitions": "default_8MB.csv",
         "memory_type": "qio_qspi"
     },
@@ -45,6 +46,6 @@
     "require_upload_port": true,
     "speed": 460800
   },
-  "url": "https://wiki.seeedstudio.com/xiao_esp32c5_getting_started/",
+  "url": "https://wiki.seeedstudio.com/SeeedStudio_XIAO_Series_Introduction/",
   "vendor": "Seeed Studio"
 }
