@@ -19,7 +19,7 @@
 ///  to 5000 if running in the PlaformIO IDE to manually switch
 ///  to the serial monitor otherwise to 2000 if an native USB 
 ///  peripheral is used or 1000 if a USB-serial adpater is used.
-///*define SERIAL_BEGIN_DELAY 8000
+///#define SERIAL_BEGIN_DELAY 10000
 ///
 //////////////////////////////////
 
@@ -142,7 +142,7 @@ void nextindex(void) {
   }  
 
   int wkpin = iopins[currentindex];
-  Serial.printf("\nWake the SoC by seting pad %s (%d) %s.\n", padlabels[currentindex], wkpin, (wakemode) ? "HIGH" : "LOW");
+  Serial.printf("\nWake the SoC by setting %s %s.\n", padlabels[currentindex], (wakemode) ? "HIGH" : "LOW");
   
   pinMode(wkpin, (wakemode) ? INPUT_PULLUP : INPUT_PULLDOWN);
   uint64_t mask = 1ULL << wkpin;
