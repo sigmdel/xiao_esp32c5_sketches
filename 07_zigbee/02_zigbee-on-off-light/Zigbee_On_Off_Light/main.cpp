@@ -168,10 +168,6 @@ void setup() {
   // Init button for factory reset
   pinMode(button, INPUT_PULLUP);
 
-  #if defined(ARDUINO_XIAO_ESP32C6) && defined(USE_EXTERNAL_ANTENNA)
-    // Assuming ESP_ARDUINO_VERSION >= 3.0.4
-    digitalWrite(WIFI_ANT_CONFIG, HIGH);
-  #endif
 
   //Optional: set Zigbee device name and model
   zbLight.setManufacturerAndModel("Espressif", "ZBLightBulb");
@@ -195,7 +191,7 @@ void setup() {
     delay(100);
   }
   Serial.println("\nsetup() completed.");
-  Serial.println("Toggle the onboard LED with short boot button presses");
+  Serial.println("Toggle the onboard LED with short boot button presses.");
   Serial.println("Perform a Zigbee factory reset and SoC reset with a");
   Serial.println("long boot button press that is longer than 3 seconds.");
 }
