@@ -3,19 +3,38 @@
 #include "esp_mac.h"
 
 /*
- * Written by: Daniel Nebert
+ * Based on the arduino-esp32 GetMacAddress.ino sketch written by Daniel Nebert
+ * and updated by me-no-dev in version 3.3.6.
  *
- * The first printed MAC address is obtained by calling 'esp_efuse_mac_get_default'
- * (https://docs.espressif.com/projects/esp-idf/en/release-v5.1/esp32/api-reference/system/misc_system_api.html#_CPPv425esp_efuse_mac_get_defaultP7uint8_t)
- * which returns base MAC address which is factory-programmed by Espressif in EFUSE.
+ * URL: https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP32/examples/MacAddress/GetMacAddress/GetMacAddress.ino
  *
- * The remaining printed MAC addresses is obtained by calling 'esp_read_mac'
- * (https://docs.espressif.com/projects/esp-idf/en/release-v5.1/esp32/api-reference/system/misc_system_api.html#_CPPv412esp_read_macP7uint8_t14esp_mac_type_t)
- * and passing in the 'esp_mac_type_t' type.
- * (https://docs.espressif.com/projects/esp-idf/en/release-v5.1/esp32/api-reference/system/misc_system_api.html#esp__mac_8h_1a1b19aca597277a2179682869c140477a)
- *
+ * Michel Deslierres (sigmdel)
+ * 2026-01-21
+ */
 
-esp_mac_type_t values:
+
+
+// Returns as a String the default mac address factory burned into eFuse of
+// the ESP32. The string will contain 23 characters representing an 8 byte
+// MAC address if the ESP32 supports IEEE 802.15.4 (Zigbee and other protocols)
+// otherwise the string will contain 17 characters representing a 6 byte
+// MAC address. Calls on 'esp_efuse_mac_get_default' to get the MAC.
+//
+extern String getDefaultMacAddress();
+
+
+// Returns as a String the mac address for the specified interface. The
+// type of the `interface` parameter is `esp_mac_type_t`.
+//
+// If 'interface' is ESP_MAC_IEEE802154 or ESP_MAC_EFUSE_EXT and the ESP32 does
+// not supports IEEE 802.15.4, the returned string will be empty.
+//
+// If 'interfaceq' is ESP_MAC_EFUSE_CUSTOM and a custom MAC has not been burned
+// in the ESP32 eFuse, the returned string will be empty and an error message
+// will be posted. No means was found to avoid this.
+
+/*
+  esp_mac_type_t values:
 
   ESP_MAC_WIFI_STA - MAC for WiFi Station (6 bytes)
   ESP_MAC_WIFI_SOFTAP - MAC for WiFi Soft-AP (6 bytes)
@@ -26,22 +45,21 @@ esp_mac_type_t values:
   ESP_MAC_EFUSE_FACTORY - MAC_FACTORY eFuse which was burned by Espressif in production (6 bytes)
   ESP_MAC_EFUSE_CUSTOM - MAC_CUSTOM eFuse which was can be burned by customer (6 bytes)
   ESP_MAC_EFUSE_EXT - if CONFIG_SOC_IEEE802154_SUPPORTED=y, MAC_EXT eFuse which is used as an extender for IEEE802154 MAC (2 bytes)
-*/
+  */
 
-extern String getDefaultMacAddress();
 extern String getInterfaceMacAddress(esp_mac_type_t interface);
 
 
-// Macro definitions for most common interfaces, returns String
+// Macro definitions for commonly used interfaces, returns a String
 
 #define STA_MAC getInterfaceMacAddress(ESP_MAC_WIFI_STA)
 #define SOFTAP_MAC getInterfaceMacAddress(ESP_MAC_WIFI_SOFTAP)
 #define BT_MAC getInterfaceMacAddress(ESP_MAC_BT)
 #define ETH_MAC getInterfaceMacAddress(ESP_MAC_ETH)
-#define ZIGBEE_MAC getInterfaceMacAddress(ESP_MAC_IEEE802154)    // no way I would remember IEEE802154_MAC
+#define ZIGBEE_MAC getInterfaceMacAddress(ESP_MAC_IEEE802154) // who would remember IEEE802154_MAC?
 
 
-// Macro definitions for most common interfaces, returns C string
+// Macro definitions for commonly used interfaces, returns a C string
 
 #define STA_MAC_STR getInterfaceMacAddress(ESP_MAC_WIFI_STA).c_str()
 #define SOFTAP_MAC_STR getInterfaceMacAddress(ESP_MAC_WIFI_SOFTAP).c_str()
