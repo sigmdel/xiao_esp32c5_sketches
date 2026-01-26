@@ -36,7 +36,12 @@ The [XIAO ESP32C5](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C5-p-6609.
 
 ## 2. Compiling the Example Sketches
 
-Each sketch or project in this repository is presented in a way that allows it to be compiled in the Arduino IDE or in the pioarduino IDE or the PlatformIO IDE extensions.
+Each sketch or project in this repository is presented in a way that allows it to be compiled in the Arduino IDE or in the pioarduino IDE or the PlatformIO IDE extensions. 
+
+To compile a sketch in the Arduino IDE click on the **Open** option in the **File** menu and navigate to and select the desired file with the `.ino` extension with the system file manager. Alternately, click on the **Sketchbook** option and navigate to the desired sketch in the sub-menu tree ([screen capture](images/arduino_sketchbook.jpg)). The IDE must be configured as explained in the [Arduino IDE](#21-arduino-ide) section below.
+
+To compile a project in the piaorduino IDE extension (or maybe the PlatformIO IDE), click on the home icon in the status bar at the bottom, then on the **[Open Project]** button and then navigate to the project's directory which contains its `platformio.ini` file. Click on the **[Open "&lt;project&gt;"]** button. The IDE must be configured as explained in the [pioarduinoIDE](#22-pioarduinoide) section below.
+
 
 ### 2.1. Arduino IDE 
 
@@ -66,11 +71,11 @@ When the repository is downloaded as an archive, its top-level directory is name
 
 All of the sketches in the repository have been successfully compiled with the [pioarduino-espressif32](https://github.com/pioarduino/platform-espressif32) platform. The January 21, 2026 version of [pioarduino/platform-espressif Release 55.03.36 Arduino Release v3.3.6 based on ESP-IDF v5.5.2.260116](https://github.com/pioarduino/platform-espressif32/releases/tag/55.03.36) was used. 
 
-The platform does not contain a board definition for the XIAO ESP32C5. A board definition, named [seeed_xiao_esp32c5.json](boards/seeed_xiao_esp32c5.json), is provided in the `boards` directory. See thee [README](boards/README.md) about the source of that definition. All the configuration files were updated to reflect the URL of the platform and the private boards directory to use. 
+The platform does not contain a board definition for the XIAO ESP32C5. A board definition, named [seeed_xiao_esp32c5.json](boards/seeed_xiao_esp32c5.json), is provided in the `boards` directory. See thee [README](boards/README.md) about the source of that definition.
 
-The `platformio.ini` configuration file in all the example sketches of the repository set the `platform` and `board` equal to the above values. 
+**The `platformio.ini` configuration file in all the example sketches of the repository set the values `platform` and `board` to those shown above.** 
 
-This was tested using the [pioarduinoIDE extension](https://marketplace.visualstudio.com/items?itemName=pioarduino.pioarduino-ide) (v1.2.5) which is a fork of the PlatformioIDE extension in [VSCodium](https://vscodium.com/) (Version: 1.108.10359) which is itself a fork of Visual Studio Code (VSCode for short). The PlatformioIDE extension is not available in the VSCodium marketplace and it does appear that it is no longer possible to find the VSIX to install it manually.
+This was tested using the [pioarduinoIDE extension](https://marketplace.visualstudio.com/items?itemName=pioarduino.pioarduino-ide) (v1.2.5) which is a fork of the PlatformioIDE extension in [VSCodium](https://vscodium.com/) (Version: 1.108.10359) which is itself a fork of Visual Studio Code. The PlatformioIDE extension is not available in the VSCodium marketplace and manual installation of its VSIX is not possible because it's not readily found anymore.
 
 > In principle, it should be possible to use the [Seeed-Studio platform-seeedboards](https://github.com/Seeed-Studio/platform-seeedboards) platform instead of the pioarduino platform-espressif32 in either the pioarduinoIDE or PlatformioIDE extensions. However it was somewhat difficult, but not impossible, to do that in cursory tests because of missing libraries in the Python virtual environment. Also, the XIAO ESP32C5 board definition in the Seeed Studio platform does seem to contain errors. Details may be provided in the [First Look at the Seeed Studio XIAO ESP32C5](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c5_intro_en.html) post or in a follow-up post.
 
@@ -139,28 +144,30 @@ Contains 3 sketches highlighting the 5 GH band capability of the ESP32-C5.
  
 ### 3.7. ./07_zibgee
 
-Contains 2 slightly modified examples from the ESP32 Arduino Zigbee library.
+Contains examples from the ESP32 Arduino Zigbee library modified to work with the XIAO ESP32C5 and XIAO ESP32C6 using their boot button and on-board user LED.
 
  | Project | Description |
  | :--- |  :--- |
- | *Zigbee_On_Off_Switch* | Library example with adjustments for the XIAO ESP32C5 and XIAO ESP32C6. |
- | *Zigbee_On_Off_Light* | Library example with adjustments for the XIAO ESP32C5 and XIAO ESP32C6. |
- 
+ | *Zigbee_On_Off_Switch* | Create a Zigbee coordinator |
+ | *Zigbee_On_Off_Light* | Create a Zigbee on/off light end device |
+ | *Zigbee_Dimmable_Light* | Create a Zigbee dimmable light end device |
+  
 ### 3.8. ./08_bluetooth
 
-Contains 3 slightly modified examples from the ESP32 Arduino BLE library.
+Contains examples from the ESP32 Arduino Zigbee library modified to work with the XIAO ESP32C5 and XIAO ESP32C6<:>
 
  | Project | Description |
  | :--- |  :--- |
- | *ble_scan* | Library example (Scan.ino) with adjustments for the XIAO ESP32C5 and XIAO ESP32C6. |
- | *server* | Library example (Server.ino) with adjustments for the XIAO ESP32C5 and XIAO ESP32C6. |
- | *client* |  Library example (Client.ino) with adjustments for the XIAO ESP32C5 and XIAO ESP32C6. |
+ | *ble_scan* | Library example (Scan.ino)  |
+ | *server* | Library example (Server.ino)  |
+ | *client* |  Library example (Client.ino)  |
 
 
 ## 4. Change Log
 
 | Date | Change |
 | :---  |  :--- | 
+| 2026-01-26 | Added 3rd Zigbee example and tweaked README |
 | 2026-01-26 | Board definition, improved README on Arduino IDE, pioarduino IDE and platforms |
 | 2026-01-22 | PlatformIO/pioarduino support and MACs changed into a private library |
 | 2026-01-21 | Corrections and README update |
