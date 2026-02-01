@@ -5,16 +5,19 @@
 #include <Arduino.h>
 #include <WiFi.h>
 
-#include "MACs.h"     // get ESP's MAC addresses
-#include "secrets.h"  // Contains WiFi network credentials
+#include "MACs.h"
+#include "secrets.h"
 
-//////// User configuration //////
+/////// User configuration //////
 ///
 ///  Define this when using XIAO ESP32C6 with a connected external antenna 
 ///#define USE_EXTERNAL_ANTENNA 
 ///
 ///  WiFi band (2.4 or 5 GHz) in which to find the specified 
-///  Specify one only - only meaningful with ESP32-C5
+///  Specify one at most - only meaningful with ESP32-C5
+///  Not necessary if a BSSID is specified in the secrets.h file. However
+///  if the BSSID is specified and the USE_BAND_MODE is set to xxxx_ONLY
+///  they must be compatible.
 ///#define USE_BAND_MODE  WIFI_BAND_MODE_2G_ONLY
 #define USE_BAND_MODE  WIFI_BAND_MODE_5G_ONLY
 ///#define USE_BAND_MODE  WIFI_BAND_MODE_AUTO
@@ -48,45 +51,67 @@
   #error An ESP32 based board is required
 #endif  
 
-#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 4))    
-  #error ESP32 Arduino core version 3.3.4 or newer needed
-#endif 
-
-#if !defined(SERIAL_BEGIN_DELAY)
-  #if defined(PLATFORMIO)
-    #define SERIAL_BEGIN_DELAY 5000    // 5 seconds
-  #elif (ARDUINO_USB_CDC_ON_BOOT > 0)
-    #define SERIAL_BEGIN_DELAY 2000    // 2 seconds
-  #else
-    #define SERIAL_BEGIN_DELAY 1000    // 1 second
-  #endif
-#endif 
+#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 6))    
+  #error ESP32 Arduino core version 3.3.6 or newer needed
+#endif
 
 //---- Identify the ESP32 board and antenna ----
 
 #if defined(ARDUINO_XIAO_ESP32C5)
-  #define TITLE "Seeed XIAO ESP32C5"
+  #define TITLE "XIAO ESP32C5"
   #define ANTENNA "A-01 FPC"
 #elif defined(ARDUINO_XIAO_ESP32C6)
   // The onboard ceramic antenna is used by default.
-  #define TITLE "Seeed XIAO ESP32C6"
+  #define TITLE "XIAO ESP32C6"
   #ifdef USE_EXTERNAL_ANTENNA 
     #define ANTENNA "EXTERNAL"
   #else
     #define ANTENNA "INTERNAL CERAMIC"
   #endif
-#elif defined(ARDUINO_XIAO_ESP32C3)
-  #define TITLE "Seeed XIAO ESP32C3"
-  #define ANTENNA "V1.2 FPC"
-#elif defined(ARDUINO_XIAO_ESP32S3)
-  #define TITLE "Seeed XIAO ESP32S3"
-  #define ANTENNA "V1.2 FPC"
-#elif defined(ESP32)
+#else
   #define TITLE "Unknown ESP32 board"
   #define ANTENNA "Unknown"
-#else  
-  #error "An ESP32 SoC required"
-#endif        
+#endif  
+
+/*
+  Convert a BSSID string such as "12:34:56:78:9A:BC" into 6 byte array .
+  Returns true if *arr is filled with a valid MAC address such as {0x12, 0x34, 0x56, 0x78, 0x9A, BC}.
+  Return false if bssid is not valid or if it scans to {0, 0, 0, 0, 0, 0}.
+
+  There is no checking that macarr points to a 6 byte array of unsigned char (uint8_t).
+
+  Indeed a type does not seem to be defined 6 byte MAC addresses. From 
+   .../framework-arduinoespressif32-libs/esp32c5/include/esp_wifi/include/esp_wifi_types_generic.h
+  typedef struct {
+    uint8_t bssid[6];                     //**< MAC address of AP *
+    uint8_t ssid[33];                     //**< SSID of AP *
+    ...
+  } wifi_ap_record_t;
+*/
+
+boolean bssidStr2bytes(String bssid, uint8_t *macarr) {
+  bssid.replace(" ", "");
+  if (sscanf(bssid.c_str(), "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx", &macarr[0], &macarr[1], &macarr[2], &macarr[3], &macarr[4], &macarr[5]) != 6)
+    memset(macarr, 0, 6); 
+
+  for (int i = 0; i < 6; i++) {
+    if (macarr[i])
+      return true; // at least one non zero byte
+  }  
+  return false; // all zeroes 
+}
+
+void printMAC(uint8_t *macarr) {
+  for (int i=0; i < 6; i++) {
+    Serial.printf("%02X", macarr[i]);
+    if (i < 5) Serial.print(":");
+  }
+  Serial.println();
+}
+
+boolean hasBSSID = false;
+uint8_t  APmac[6];
+
 
 // Prints current Wi-Fi band mode 
 void printWiFiBandMode(char msg[], wifi_band_mode_t mode ) {
@@ -103,6 +128,16 @@ void printWiFiBandMode(char msg[], wifi_band_mode_t mode ) {
 NetworkClient client;
 
 void setup() {
+  #if !defined(SERIAL_BEGIN_DELAY)
+    #if defined(PLATFORMIO)
+      #define SERIAL_BEGIN_DELAY 5000    // 5 seconds
+    #elif (ARDUINO_USB_CDC_ON_BOOT > 0)
+      #define SERIAL_BEGIN_DELAY 2000    // 2 seconds
+    #else
+      #define SERIAL_BEGIN_DELAY 1000    // 1 second
+    #endif
+  #endif 
+
   #if (ARDUINO_USB_CDC_ON_BOOT > 0)
   Serial.begin();
   delay(SERIAL_BEGIN_DELAY);
@@ -117,30 +152,49 @@ void setup() {
     digitalWrite(WIFI_ANT_CONFIG, HIGH);
   #endif
 
-  Serial.println("\n\nProject: Wi-Fi Throughput");
-  Serial.println(" Source: https://tutoduino.fr/en/esp32-wifi-performance/");
-  Serial.printf("  Board: %s\n", TITLE);
-  Serial.printf("STA MAC: %s\n", STA_MAC_STR);
-  Serial.printf("Antenna: %s\n\n", ANTENNA);
+  Serial.println("\n\n Project: throughput");
+  Serial.println("  Source: https://tutoduino.fr/en/esp32-wifi-performance/");
+  Serial.printf("   Board: %s\n", TITLE);
+  Serial.printf(" Antenna: %s\n", ANTENNA);
+  Serial.printf(" STA MAC: %s\n", STA_MAC_STR);
+  Serial.printf(" Network: %s\n", ssid);
+ 
+  hasBSSID = bssidStr2bytes(bssid, &APmac[0]);
+  if (hasBSSID) {
+    Serial.print("AP BSSID: ");
+    printMAC(&APmac[0]);
+  } else if (strlen(bssid)) {
+    Serial.printf("bssid \"%s\" in secrets.h is invalid and thus ignored\n", bssid);
+  }
+  Serial.println();
 
   // Connect to WiFi access point
   WiFi.mode(WIFI_STA);
-  if (USE_BAND_MODE != WiFi.getBandMode()) {
-    printWiFiBandMode((char*)"Switching to WiFi Band Mode:", USE_BAND_MODE);
-    if (!WiFi.setBandMode(USE_BAND_MODE))  // this may fail with SoCs other than ESP32-C5
-      Serial.println("Failed");  
-    printWiFiBandMode((char*)"WiFi Band Mode set to:", WiFi.getBandMode()); // report the actual mode
-  }   
-  delay(10);
-  Serial.printf("Connecting to wireless network %s\n", ssid);
-  WiFi.begin(ssid, password);
+
+  #ifdef USE_BAND_MODE
+    if (USE_BAND_MODE != WiFi.getBandMode()) {
+      printWiFiBandMode((char*)"Switching to WiFi Band Mode:", USE_BAND_MODE);
+      if (!WiFi.setBandMode(USE_BAND_MODE))  // this may fail with SoCs other than ESP32-C5
+        Serial.println("Failed");  
+      printWiFiBandMode((char*)"WiFi Band Mode set to:", WiFi.getBandMode()); // report the actual mode
+    }   
+    delay(10);
+  #endif
+
+  Serial.printf("Connecting to %s access point\n", ssid);
+  
+  if (hasBSSID) {
+    WiFi.begin(ssid, password, 0, &APmac[0]); // or (uint8_t*) &APmac);
+  } else {
+    WiFi.begin(ssid, password);
+  }
   // Wait until connected (blocking loop)
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
   Serial.println();
-  Serial.println("WiFi connected!");
+  Serial.printf("Connected to WiFi AP %s (%s)\n", ssid, WiFi.BSSIDstr().c_str());
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 }
@@ -211,4 +265,3 @@ void loop() {
   Serial.println("Waiting 10 seconds before next test");
   delay(10000);
 }
-
