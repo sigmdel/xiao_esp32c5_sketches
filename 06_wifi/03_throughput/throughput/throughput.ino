@@ -9,7 +9,7 @@
  *
  *  1- Add https://espressif.github.io/arduino-esp32/package_esp32_index.json
  *     in the Additional Boards Manager URLS in the Preferences window.
- *  2- Install platform esp32 by Espressif version 3.3.4 or newer with the Boards Manager
+ *  2- Install platform esp32 by Espressif version 3.3.6 or newer with the Boards Manager
  *  3- Select the XIAO ESP32C5 board
  *
  * Michel Deslierres
@@ -19,10 +19,4 @@
  *           by Tutoduino,.fr, 22 December 2025
  *           @https://tutoduino.fr/en/esp32-wifi-performance/
  *
- * 
- * //
- * // ESP32 Wi-Fi throughput test program
- * //
- * // https://tutoduino.fr/en/esp32-wifi-performance/ //
- * //
  */
