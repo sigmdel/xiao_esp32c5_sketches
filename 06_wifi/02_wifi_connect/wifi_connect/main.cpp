@@ -23,8 +23,8 @@
 /// Time allowed for user input in milliseconds. If the user does not 
 /// select a network in that time period, the first network will be
 /// chosen by default. The timer is restarted if the user enters an
-/// invalid number.
-#define CHOICE_TIMEOUT 10000
+/// invalid number. If 0 will wait indefinitely for the user choice
+///#define CHOICE_TIMEOUT 0
 ///
 /// Time period in milliseconds between report of WiFi status
 #define STATUS_TIME 10000
@@ -43,53 +43,39 @@
 ///  to 5000 if running in the PlaformIO IDE to manually switch
 ///  to the serial monitor otherwise to 2000 if an native USB 
 ///  peripheral is used or 1000 if a USB-serial adpater is used.
-///*define SERIAL_BEGIN_DELAY 8000
+///#define SERIAL_BEGIN_DELAY 10000
 ///
 //////////////////////////////////
+
+#ifndef CHOICE_TIMEOUT
+#define CHOICE_TIMEOUT 0
+#endif
 
 #if !defined(ESP32)
   #error An ESP32 based board is required
 #endif  
 
-#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 4))    
-  #error ESP32 Arduino core version 3.3.4 or newer needed
-#endif 
-
-#if !defined(SERIAL_BEGIN_DELAY)
-  #if defined(PLATFORMIO)
-    #define SERIAL_BEGIN_DELAY 5000    // 5 seconds
-  #elif (ARDUINO_USB_CDC_ON_BOOT > 0)
-    #define SERIAL_BEGIN_DELAY 2000    // 2 seconds
-  #else
-    #define SERIAL_BEGIN_DELAY 1000    // 1 second
-  #endif
-#endif 
+#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 6))    
+  #error ESP32 Arduino core version 3.3.6 or newer needed
+#endif
 
 //---- Identify the ESP32 board and antenna ----
 
 #if defined(ARDUINO_XIAO_ESP32C5)
-  #define TITLE "Seeed XIAO ESP32C5"
+  #define TITLE "XIAO_ESP32C5"
   #define ANTENNA "A-01 FPC"
 #elif defined(ARDUINO_XIAO_ESP32C6)
   // The onboard ceramic antenna is used by default.
-  #define TITLE "Seeed XIAO ESP32C6"
+  #define TITLE "XIAO ESP32C6"
   #ifdef USE_EXTERNAL_ANTENNA 
     #define ANTENNA "EXTERNAL"
   #else
-    #define ANTENNA "INTERNAL CERAMIC"
+    #define ANTENNA "ONBOARD CERAMIC"
   #endif
-#elif defined(ARDUINO_XIAO_ESP32C3)
-  #define TITLE "Seeed XIAO ESP32C3"
-  #define ANTENNA "V1.2 FPC"
-#elif defined(ARDUINO_XIAO_ESP32S3)
-  #define TITLE "Seeed XIAO ESP32S3"
-  #define ANTENNA "V1.2 FPC"
-#elif defined(ESP32)
+#else
   #define TITLE "Unknown ESP32 board"
   #define ANTENNA "Unknown"
-#else  
-  #error "An ESP32 SoC required"
-#endif        
+#endif  
 
 // Scand for all network with the given secrets.ssid
 // and displayd them. Returns the number of networks found.
@@ -132,6 +118,7 @@ int findNetworks(void) {
 
 // Prints current Wi-Fi band mode 
 void printWiFiBandMode(char msg[]) {
+  WiFi.STA.begin();
   if (msg) Serial.printf("%s ", msg);
   switch (WiFi.getBandMode()) {
     case WIFI_BAND_MODE_2G_ONLY: Serial.println("2.4 GHz only"); break;
@@ -201,7 +188,11 @@ void printWiFiStatus(void) {
 //
 int userChoice(int n) {
   unsigned long promptime = millis();
-  while (millis() - promptime < CHOICE_TIMEOUT) {
+  while (true) {
+    if ((CHOICE_TIMEOUT > 0) && (millis() - promptime < CHOICE_TIMEOUT)) {
+      Serial.println("\nTimed out, defaulting to 0 (automatic selection)");
+      return 0;
+    }  
     while (Serial.available()) {
       char c = (char)Serial.read();
       Serial.write(c);
@@ -211,16 +202,24 @@ int userChoice(int n) {
           choice = -1;
           Serial.printf("\n*** must be a digit less than or equal to %d\n", n);
           promptime = millis();
-      } else if ((c = '\n') && (choice >= 0))
-        return choice;
+        } else if ((c = '\n') && (choice >= 0))
+          return choice;
       }
     }
   }
-  Serial.println("\nTimed out, defaulting to 0 (automatic selection)");
-  return 0;
-}    
+}   
 
 void setup() {
+  #if !defined(SERIAL_BEGIN_DELAY)
+    #if defined(PLATFORMIO)
+      #define SERIAL_BEGIN_DELAY 5000    // 5 seconds
+    #elif (ARDUINO_USB_CDC_ON_BOOT > 0)
+      #define SERIAL_BEGIN_DELAY 2000    // 2 seconds
+    #else
+      #define SERIAL_BEGIN_DELAY 1000    // 1 second
+    #endif
+  #endif 
+
   #if (ARDUINO_USB_CDC_ON_BOOT > 0)
   Serial.begin();
   delay(SERIAL_BEGIN_DELAY);
@@ -242,11 +241,10 @@ void setup() {
   printWiFiBandMode((char*)"WiFi Band Mode:");
   Serial.println();
   
-  WiFi.STA.begin();
   
   int n = findNetworks();
   if (n < 1) {
-    Serial.println("Will reboot in 10 seconds");
+    Serial.println("No networks found. Will reboot in 10 seconds");
     delay(10000);
     ESP.restart();
   }
@@ -257,7 +255,7 @@ void setup() {
     networkindex = userChoice(n) - 1;
   } 
 
-  Serial.println("\nModule setup done");
+  Serial.println("\nsetup() done");
   statetime = millis();
 }
 
@@ -308,4 +306,3 @@ void loop() {
   }
 }  
     
-
