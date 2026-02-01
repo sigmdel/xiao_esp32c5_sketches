@@ -32,6 +32,6 @@ The proposed board definition is a blend of two existing definitions:
 
   2.  [esp32-c5-devkitc1-n8r4.json](https://github.com/pioarduino/platform-espressif32/blob/main/boards/esp32-c5-devkitc1-n8r4.json) presumably from Espressif.
 
-These two definitions are also in the directory, to make it easy to compare them. That comparison revealed discrepancies where I would think that the Espressif definition is correct. These differences are about the `flash_mode` and the `maximum_size`. The hardware ids (`hwids`), which are the USB vendor:product values, do not correspond to the observed value. 
+These two definitions are also in the directory, to make it easy to compare them. That reveals discrepancies that are presented at length in the [Questions on the XIAO ESP32C5 Board Definition #32](https://github.com/Seeed-Studio/platform-seeedboards/issues/32). 
 
-Hopefully, the proposed [seeed_xiao_esp32c5.json](seeed_xiao_esp32c5.json) is correct.
+Hopefully, a confirmed correct board definition for the XIAO ESP32C5 will be added to the pioarduino platform-espressif32 platform in the near future making this directory redundant.

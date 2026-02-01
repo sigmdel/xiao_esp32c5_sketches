@@ -23,7 +23,7 @@
 ///
 ///  Rate of USB to Serial chip if used on the development board.
 ///  This is ignored when the native USB peripheral of the 
-///  ESP SoC is used.
+///  ESP SoC is used such as on the XIAO ESP32C5
 #define SERIAL_BAUD 115200
 ///
 ///  Time in milliseconds to wait after Serial.begin() in 
@@ -31,7 +31,7 @@
 ///  to 5000 if running in the PlaformIO IDE to manually switch
 ///  to the serial monitor otherwise to 2000 if an native USB 
 ///  peripheral is used or 1000 if a USB-serial adpater is used.
-///*define SERIAL_BEGIN_DELAY 8000
+///#define SERIAL_BEGIN_DELAY 8000
 ///
 //////////////////////////////////
 
