@@ -22,7 +22,7 @@
 ///  to 5000 if running in the PlaformIO IDE to manually switch
 ///  to the serial monitor otherwise to 2000 if an native USB 
 ///  peripheral is used or 1000 if a USB-serial adpater is used.
-///*define SERIAL_BEGIN_DELAY 8000
+///#define SERIAL_BEGIN_DELAY 10000
 ///
 //////////////////////////////////
 
@@ -30,47 +30,39 @@
   #error An ESP32 based board is required
 #endif  
 
-#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 4))    
-  #error ESP32 Arduino core version 3.3.4 or newer needed
-#endif 
-
-#if !defined(SERIAL_BEGIN_DELAY)
-  #if defined(PLATFORMIO)
-    #define SERIAL_BEGIN_DELAY 5000    // 5 seconds
-  #elif (ARDUINO_USB_CDC_ON_BOOT > 0)
-    #define SERIAL_BEGIN_DELAY 2000    // 2 seconds
-  #else
-    #define SERIAL_BEGIN_DELAY 1000    // 1 second
-  #endif
-#endif 
+#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 6))    
+  #error ESP32 Arduino core version 3.3.6 or newer needed
+#endif
 
 //---- Identify the ESP32 board and antenna ----
 
 #if defined(ARDUINO_XIAO_ESP32C5)
-  #define TITLE "Seeed XIAO ESP32C5"
+  #define TITLE "XIAO_ESP32C5"
   #define ANTENNA "A-01 FPC"
 #elif defined(ARDUINO_XIAO_ESP32C6)
   // The onboard ceramic antenna is used by default.
-  #define TITLE "Seeed XIAO ESP32C6"
+  #define TITLE "XIAO ESP32C6"
   #ifdef USE_EXTERNAL_ANTENNA 
     #define ANTENNA "EXTERNAL"
   #else
-    #define ANTENNA "INTERNAL CERAMIC"
+    #define ANTENNA "ONBOARD CERAMIC"
   #endif
-#elif defined(ARDUINO_XIAO_ESP32C3)
-  #define TITLE "Seeed XIAO ESP32C3"
-  #define ANTENNA "V1.2 FPC"
-#elif defined(ARDUINO_XIAO_ESP32S3)
-  #define TITLE "Seeed XIAO ESP32S3"
-  #define ANTENNA "V1.2 FPC"
-#elif defined(ESP32)
+#else
   #define TITLE "Unknown ESP32 board"
   #define ANTENNA "Unknown"
-#else  
-  #error "An ESP32 SoC required"
-#endif        
+#endif  
 
 void setup() {
+  #if !defined(SERIAL_BEGIN_DELAY)
+    #if defined(PLATFORMIO)
+      #define SERIAL_BEGIN_DELAY 5000    // 5 seconds
+    #elif (ARDUINO_USB_CDC_ON_BOOT > 0)
+      #define SERIAL_BEGIN_DELAY 2000    // 2 seconds
+    #else
+      #define SERIAL_BEGIN_DELAY 1000    // 1 second
+    #endif
+  #endif 
+
   #if (ARDUINO_USB_CDC_ON_BOOT > 0)
   Serial.begin();
   delay(SERIAL_BEGIN_DELAY);
@@ -85,45 +77,45 @@ void setup() {
     digitalWrite(WIFI_ANT_CONFIG, HIGH);
   #endif
 
-  Serial.println("\n\nProject: Wi-Fi Scan");
+  Serial.println("\n\nProject: wifi_scan");
+  Serial.println("Purpose: List found Wi-Fi networks");
   Serial.printf("  Board: %s\n", TITLE);
   Serial.printf("STA MAC: %s\n", STA_MAC_STR);
   Serial.printf("Antenna: %s\n\n", ANTENNA);
   
-  #if defined(ARDUINO_XIAO_ESP32C5) && (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 6))  // assuming this is fixed in 3.3.6
-    // Set Debug Core Level to Error or higher in Tool menu  to see run time error 
-    // This print statement will make it easier to spot the error 
-    Serial.println("\n>>>>>>>>>> Starting Wi-Fi STA <<<<<<<<<<<<<");
-    WiFi.STA.begin();
-    Serial.println("Wi-Fi STA started");
-  #else
-    WiFi.STA.begin();
-  #endif    
+  Serial.println("Starting Wi-Fi in STA(tion) mode");
+  WiFi.STA.begin();
 
   Serial.println("Setup done");
 }
 
+void printDashes(int n = 83) {
+            //            10        20        30        40        50        60        70        80
+            //    1234567890123456789012345678901234567890123456789012345678901234567890123456789012345
+  #define DASHES "-------------------------------------------------------------------------------------"
+  printf("%.*s\n", n, DASHES); 
+}  
+
+
 void ScanWiFi() {
-  Serial.println("Scan start");
+  Serial.print("Scan start... ");
+
   // WiFi.scanNetworks will return the number of networks found.
   int n = WiFi.scanNetworks();
-  Serial.println("Scan done");
+  Serial.println("done");
   if (n == 0) {
     Serial.println("no networks found");
   } else {
     Serial.print(n);
     Serial.println(" networks found");
-    Serial.println("Nr | SSID                             | RSSI | CH | Encryption");
+    Serial.println("Nr | SSID                             |       BSSID       | RSSI |  CH | Encryption");
     for (int i = 0; i < n; ++i) {
       // Print SSID and RSSI for each network found
-      Serial.printf("%2d", i + 1);
-      Serial.print(" | ");
-      Serial.printf("%-32.32s", WiFi.SSID(i).c_str());
-      Serial.print(" | ");
-      Serial.printf("%4ld", WiFi.RSSI(i));
-      Serial.print(" | ");
-      Serial.printf("%2ld", WiFi.channel(i));
-      Serial.print(" | ");
+      Serial.printf("%2d | ", i + 1);
+      Serial.printf("%-32.32s | ", WiFi.SSID(i).c_str());
+      Serial.printf("%-17.17s | ", WiFi.BSSIDstr(i).c_str());
+      Serial.printf("%4ld | ", WiFi.RSSI(i));
+      Serial.printf("%3ld | ", WiFi.channel(i));
       switch (WiFi.encryptionType(i)) {
         case WIFI_AUTH_OPEN:            Serial.print("open"); break;
         case WIFI_AUTH_WEP:             Serial.print("WEP"); break;
@@ -143,30 +135,30 @@ void ScanWiFi() {
 
   // Delete the scan result to free memory for code below.
   WiFi.scanDelete();
-  Serial.println("-------------------------------------");
+  Serial.println();
 }
 
 void loop() {
-  Serial.println("-------------------------------------");
+  printDashes();
   Serial.println("Default wifi band mode scan:");
-  Serial.println("-------------------------------------");
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5, 4, 2)
-  WiFi.setBandMode(WIFI_BAND_MODE_AUTO);
-#endif
+  WiFi.setBandMode(WIFI_BAND_MODE_AUTO); // introdudced in ESP-IDF 5.4.2, esp32 3.3.6 is based on ESP-IDF 5.5.2
+
+  // First scan will contain network on both bands if 5G supporte, 2.4GHz band only otherwise
   ScanWiFi();
+
 #if CONFIG_SOC_WIFI_SUPPORT_5G
+  // both bands supported, so scan bands separately, 5 GHz band first
   // Wait a bit before scanning again.
   delay(1000);
-  Serial.println("-------------------------------------");
+  printDashes();
   Serial.println("2.4 Ghz wifi band mode scan:");
-  Serial.println("-------------------------------------");
   WiFi.setBandMode(WIFI_BAND_MODE_2G_ONLY);
   ScanWiFi();
-  // Wait a bit before scanning again.
+
+  // Wait a bit before scanning again, 2.4 GHz band second.
   delay(1000);
-  Serial.println("-------------------------------------");
+  printDashes();
   Serial.println("5 Ghz wifi band mode scan:");
-  Serial.println("-------------------------------------");
   WiFi.setBandMode(WIFI_BAND_MODE_5G_ONLY);
   ScanWiFi();
 #endif
