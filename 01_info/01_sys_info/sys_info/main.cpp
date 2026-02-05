@@ -16,7 +16,7 @@
 ///  to 5000 if running in the PlaformIO IDE to manually switch
 ///  to the serial monitor otherwise to 2000 if an native USB 
 ///  peripheral is used or 1000 if a USB-serial adpater is used.
-///*define SERIAL_BEGIN_DELAY 8000
+///#define SERIAL_BEGIN_DELAY 8000
 ///
 //////////////////////////////////
 
@@ -24,18 +24,8 @@
   #error An ESP32 based board is required
 #endif  
 
-#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 4))    
-  #error ESP32 Arduino core version 3.3.4 or newer needed
-#endif 
-
-#if !defined(SERIAL_BEGIN_DELAY)
-  #if defined(PLATFORMIO)
-    #define SERIAL_BEGIN_DELAY 5000    // 5 seconds
-  #elif (ARDUINO_USB_CDC_ON_BOOT > 0)
-    #define SERIAL_BEGIN_DELAY 2000    // 2 seconds
-  #else
-    #define SERIAL_BEGIN_DELAY 1000    // 1 second
-  #endif
+#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 6))    
+  #error ESP32 Arduino core version 3.3.6 or newer needed
 #endif 
 
 void printFactoryMac(void) {
@@ -61,7 +51,7 @@ void printFactoryMac(void) {
 void printFlashChipMode(FlashMode_t mode) {
   switch (mode) {
     case FM_QIO:  Serial.print("FM_QIO"); break;
-    case FM_QOUT: Serial.print("FMQOUT"); break;
+    case FM_QOUT: Serial.print("FM_QOUT"); break;
     case FM_DIO:  Serial.print("FM_DIO"); break;
     case FM_DOUT: Serial.print("FM_DOUT"); break;
     case FM_FAST_READ: Serial.print("FM_FAST_READ"); break;
@@ -86,7 +76,7 @@ void getInfo(void) {
 	printFlashChipMode(ESP.getFlashChipMode());
 	Serial.printf(" (%d)\n", ESP.getFlashChipMode());
 
-	Serial.println("\nSPI RAM Memory (PSRAM)");
+	Serial.println("\nPseudo random access memory (PSRAM aka SPI RAM)");
 	Serial.printf("  PSRAM size: %lu\n", ESP.getPsramSize());
 	Serial.printf("  Free PSRAM: %lu\n", ESP.getFreePsram());
 	Serial.printf("  Min free PSRAM: %lu\n", ESP.getMinFreePsram());
@@ -100,13 +90,22 @@ void getInfo(void) {
 	Serial.println("\nHeap");
 	Serial.printf("  Size: %lu\n", ESP.getHeapSize()); //total heap size
 	Serial.printf("  Free: %lu\n", ESP.getFreeHeap()); //available heap
-	Serial.printf("  Mininum free since boot: %lu\n", ESP.getMinFreeHeap()); //lowest level of free heap since boot
+	Serial.printf("  Minimum free since boot: %lu\n", ESP.getMinFreeHeap()); //lowest level of free heap since boot
 	Serial.printf("  Maximum allocation size: %lu\n", ESP.getMaxAllocHeap()); //largest block of heap that can be allocated
-
-
 }
 
 void setup() {
+  // put your setup code here, to run once:
+  #if !defined(SERIAL_BEGIN_DELAY)
+    #if defined(PLATFORMIO)
+      #define SERIAL_BEGIN_DELAY 5000    // 5 seconds
+    #elif (ARDUINO_USB_CDC_ON_BOOT > 0)
+      #define SERIAL_BEGIN_DELAY 2000    // 2 seconds
+    #else
+      #define SERIAL_BEGIN_DELAY 1000    // 1 second
+    #endif
+  #endif 
+
   #if (ARDUINO_USB_CDC_ON_BOOT > 0)
   Serial.begin();
   delay(SERIAL_BEGIN_DELAY);
