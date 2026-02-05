@@ -15,8 +15,8 @@ This example shows how a XIAO ESP32C6 or XIAO ESP32C5 can be a Zigbee Coordinato
 - [3. Configure the Project](#3-configure-the-project)
 - [4. Compiling and Uploading the Sketch](#4-compiling-and-uploading-the-sketch)
   - [4.1. Using Arduino IDE](#41-using-arduino-ide)
-  - [4.2. Using PlatformIO](#42-using-platformio)
-- [5. Connecting to a Zigbee Coordinator](#5-connecting-to-a-zigbee-coordinator)
+  - [4.2. Using pioarduino IDE](#42-using-pioarduino-ide)
+- [5. Connecting a Zigbee On Off Light to this Zigbee Coordinator](#5-connecting-a-zigbee-on-off-light-to-this-zigbee-coordinator)
 
 <!-- /TOC -->
 ---
@@ -38,7 +38,7 @@ Currently, this example supports the following targets.
 
 ## 3. Configure the Project
 
-The sketch should work as is if uploaded to a Seeed Studio [Seeed Studio XIAO ESP32C6](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C6-p-5884.html) or the soon to be released XIAO ESP23C5. If using a XIAO ESP32C6 with a connected external antenna, please define the USE_EXTERNAL_ANTENNA macro near the beginning of the source code in the `/////// User configuration ////` section. The other options in that section 
+The sketch should work as is if uploaded to a Seeed Studio [XIAO ESP32C6](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C6-p-5884.html) or [XIAO ESP32C5](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C5-p-6609.html). If using a XIAO ESP32C6 with a connected external antenna, please define the USE_EXTERNAL_ANTENNA macro near the beginning of the source code in the `/////// User configuration ////` section. The other options in that section 
 
 The project may work with other development boards based on a supported SoC. There are macros in the ///<User settable macros> section at the beginning of the source code that can be used to override automatic definitions valid for the XIAO boards.
 
@@ -70,9 +70,43 @@ Before Compile/Verify, go to the `Tools` menu to modify the following options.
 
 Same as for the XIAO ESP32C6 except for the bigger partition scheme.
 
-### 4.2. Using PlatformIO
+### 4.2. Using pioarduino IDE
 
-*forthcoming*
+The sketch was successfully compiled with version 55.03.36 of the  [pioarduino-espressif32](https://github.com/pioarduino/platform-espressif32) platform released on January 21, 2026. The platform does not contain a board definition for the XIAO ESP32C5. A board definition, named [seeed_xiao_esp32c5.json](boards/seeed_xiao_esp32c5.json), is provided in the `boards` directory. See the [README](../../../boards/README.md) about the source of that definition.
+
+This was tested using the [pioarduinoIDE extension](https://marketplace.visualstudio.com/items?itemName=pioarduino.pioarduino-ide) (v1.2.5) which is a fork of the PlatformioIDE extension in [VSCodium](https://vscodium.com/) (Version: 1.108.10359) which is itself a fork of Visual Studio Code.
+
+```ini
+[platformio]
+default_envs = seeed_xiao_esp32c5
+;default_envs = seeed_xiao_esp32c6
+
+; Make the Arduino IDE happy (.INO file must be in a directory of the same name)
+src_dir = Zigbee_On_Off_Switch
+boards_dir = ../../boards   ;; .../xiao_esp32c5_sketches/boards/
+lib_dir = ../../libraries   ;; .../xiao_esp32c5_sketches/libraries/
+
+[env]
+platform = https://github.com/pioarduino/platform-espressif32/releases/download/stable/platform-espressif32.zip
+framework = arduino
+build_flags = 
+  -D ZIGBEE_MODE_ZCZR
+  ;-D CORE_DEBUG_LEVEL=0 ; 0: none, 1: critical, 2: error, 3: info, 4: debug, 5: verbose         
+;upload_port = /dev/ttyACM0
+;monitor_port = /dev/ttyACM0
+
+[env:seeed_xiao_esp32c5]
+board = seeed_xiao_esp32c5
+board_build.partitions = zigbee_zczr_8MB.csv
+monitor_speed = 460800
+
+[env:seeed_xiao_esp32c6]
+board = seeed_xiao_esp32c6
+board_build.partitions = zigbee_zczr.csv
+monitor_speed = 460800                 
+```
+
+For core debugging, uncomment `-D CORE_DEBUG_LEVEL=x` in `build_flags` and set `x` to the desired level. By default, the level is 0.
 
 ## 5. Connecting a Zigbee On Off Light to this Zigbee Coordinator
 

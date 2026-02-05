@@ -72,9 +72,44 @@ Before Compile/Verify, go to the `Tools` menu to modify the following options.
 
 Same as for the XIAO ESP32C6 except for the bigger partition scheme.
 
-### 4.2. Using PlatformIO
+### 4.2. Using pioarduino IDE
 
-*forthcoming*
+The sketch was successfully compiled with version 55.03.36 of the  [pioarduino-espressif32](https://github.com/pioarduino/platform-espressif32) platform released on January 21, 2026. The platform does not contain a board definition for the XIAO ESP32C5. A board definition, named [seeed_xiao_esp32c5.json](boards/seeed_xiao_esp32c5.json), is provided in the `boards` directory. See the [README](../../../boards/README.md) about the source of that definition.
+
+This was tested using the [pioarduinoIDE extension](https://marketplace.visualstudio.com/items?itemName=pioarduino.pioarduino-ide) (v1.2.5) which is a fork of the PlatformioIDE extension in [VSCodium](https://vscodium.com/) (Version: 1.108.10359) which is itself a fork of Visual Studio Code.
+
+```ini
+[platformio]
+default_envs = seeed_xiao_esp32c5
+;default_envs = seeed_xiao_esp32c6
+
+; Make the Arduino IDE happy (.INO file must be in a directory of the same name)
+src_dir = Zigbee_On_Off_Light
+boards_dir = ../../boards   ;; .../xiao_esp32c5_sketches/boards/
+lib_dir = ../../libraries   ;; .../xiao_esp32c5_sketches/libraries/
+
+[env]
+platform = https://github.com/pioarduino/platform-espressif32/releases/download/stable/platform-espressif32.zip
+framework = arduino
+build_flags =
+  -D ZIGBEE_MODE_ED
+  ;-D CORE_DEBUG_LEVEL=0 ; 0: none, 1: critical, 2: error, 3: info, 4: debug, 5: verbose 
+;upload_port = /dev/ttyACM0
+;monitor_port = /dev/ttyACM0
+
+[env:seeed_xiao_esp32c5]
+board = seeed_xiao_esp32c5
+board_build.partitions = zigbee_8MB.csv
+monitor_speed = 460800
+
+[env:seeed_xiao_esp32c6]
+board = seeed_xiao_esp32c6
+board_build.partitions = zigbee.csv
+monitor_speed = 460800
+```
+
+For core debugging, uncomment `-D CORE_DEBUG_LEVEL=x` in `build_flags` and set `x` to the desired level. By default, the level is 0.
+
 
 ## 5. Connecting to a Zigbee Coordinator
 
