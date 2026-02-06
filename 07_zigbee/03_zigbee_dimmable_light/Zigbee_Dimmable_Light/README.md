@@ -1,68 +1,182 @@
 # Arduino-ESP32 Zigbee Dimmable Light Example
 
-This example shows how to configure the Zigbee end device and use it as a Home Automation (HA) dimmable light.
+This example shows how a XIAO ESP32C6 or XIAO ESP32C5 can be a Zigbee end device and could be the basis of a dimmable light in a Zigbee compatible Home Automation (HA) system.
 
-# Supported Targets
+**The original README was renamed [README-org.md](README-org.md)**
+
+---
+
+**Table of Content**
+
+<!-- TOC -->
+
+- [1. Supported Targets](#1-supported-targets)
+- [2. Hardware Required](#2-hardware-required)
+- [3. Configure the Project](#3-configure-the-project)
+- [4. Compiling and Uploading the Sketch](#4-compiling-and-uploading-the-sketch)
+  - [4.1. Using Arduino IDE](#41-using-arduino-ide)
+  - [4.2. Using pioarduino IDE](#42-using-pioarduino-ide)
+- [5. Connecting to a Zigbee2MQTT Coordinator](#5-connecting-to-a-zigbee2mqtt-coordinator)
+- [6. Troubleshooting](#6-troubleshooting)
+  - [6.1. Not Enough Current](#61-not-enough-current)
+  - [6.2. Unable to connect to the Zigbee coordinator](#62-unable-to-connect-to-the-zigbee-coordinator)
+
+<!-- /TOC -->
+---
+
+## 1. Supported Targets
 
 Currently, this example supports the following targets.
 
-| Supported Targets | ESP32-C6 | ESP32-H2 |
-| ----------------- | -------- | -------- |
+| Supported SoCs | ESP32-C5 |ESP32-C6 | ESP32-H2 |
+| --- | --- | --- | --- |
 
-## Hardware Required
+## 2. Hardware Required
+
+* A development board (ESP32-H2, ESP32-C6 or ESP32-C5 based) acting as a Zigbee end device (running the Zigbee_Dimmable_Light example).
 
 * A USB cable for power supply and programming
-* Board (ESP32-H2 or ESP32-C6) as Zigbee end device and upload the Zigbee_Dimmable_Light example
-* Zigbee network / coordinator (Other board with switch examples or Zigbee2mqtt or ZigbeeHomeAssistant like application)
 
-### Configure the Project
+* A compatible Zigbee coordinator such as Zigbee2MQTT
 
-Set the LED GPIO by changing the `LED_PIN` definition. By default, the LED_PIN is `RGB_BUILTIN`.
+## 3. Configure the Project
 
-#### Using Arduino IDE
+The sketch should work as is if uploaded to a Seeed Studio [XIAO ESP32C6](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C6-p-5884.html) or [XIAO ESP32C5](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C5-p-6609.html). If using a XIAO ESP32C6 with a connected external antenna, please define the USE_EXTERNAL_ANTENNA macro near the beginning of the source code in the `/////// User configuration ////` section.
 
-To get more information about the Espressif boards see [Espressif Development Kits](https://www.espressif.com/en/products/devkits).
+The project may work with other development boards based on a supported SoC. There are macros in the `///<User settable macros>` section at the beginning of the source code that can be used to override automatic definitions valid for the XIAO boards.
 
-* Before Compile/Verify, select the correct board: `Tools -> Board`.
-* Select the End device Zigbee mode: `Tools -> Zigbee mode: Zigbee ED (end device)`
-* Select Partition Scheme for Zigbee: `Tools -> Partition Scheme: Zigbee 4MB with spiffs`
-* Select the COM port: `Tools -> Port: xxx` where the `xxx` is the detected COM port.
-* Optional: Set debug level to verbose to see all logs from Zigbee stack: `Tools -> Core Debug Level: Verbose`.
+## 4. Compiling and Uploading the Sketch
 
-## Troubleshooting
+### 4.1. Using Arduino IDE
 
-If the End device flashed with this example is not connecting to the coordinator, erase the flash of the End device before flashing the example to the board. It is recommended to do this if you re-flash the coordinator.
-You can do the following:
+Before Compile/Verify, go to the `Tools` menu to modify the following options.
 
-* In the Arduino IDE go to the Tools menu and set `Erase All Flash Before Sketch Upload` to `Enabled`.
-* Add to the sketch `Zigbee.factoryReset();` to reset the device and Zigbee stack.
+**XIAO ESP32C6**
 
-By default, the coordinator network is closed after rebooting or flashing new firmware.
-To open the network you have 2 options:
+* Select the correct **Board** (example: *"XIAO_ESP32C6"*).
+* Select the correct **Port** (examples: *"/dev/ttyACM0"* in Linux, *"Com4"* in Windows).
+* Set the **Partition Scheme** to *"Zigbee ZCZR 4MB with spiffs"*.
+* Set the **Zigbee mode** *"Zigbee ZCZR (coordinator/router)"*.
+* Optional: Set **Core Debug Level** to the desired level such as *"Verbose"* (default is *"None"*).
+* Optional: Set **Erase All Flash Before Sketch Upload** to *"Enabled"* (default is *"Disabled"*).
 
-* Open network after reboot by setting `Zigbee.setRebootOpenNetwork(time);` before calling `Zigbee.begin();`.
-* In application you can anytime call `Zigbee.openNetwork(time);` to open the network for devices to join.
+<!-- ![IDE-Tools-screenshot](../tools_config.jpg) -->
 
-***Important: Make sure you are using a good quality USB cable and that you have a reliable power source***
+**XIAO ESP32C5**
 
-* **LED not blinking:** Check the wiring connection and the IO selection.
-* **Programming Fail:** If the programming/flash procedure fails, try reducing the serial connection speed.
-* **COM port not detected:** Check the USB cable and the USB to Serial driver installation.
+* Select the correct **Board** (example: *"XIAO_ESP3256"*).
+* Select the correct **Port** (examples: *"/dev/ttyACM0"* in Linux, *"Com4"* in Windows).
+* Set the **Partition Scheme** to *"Zigbee ZCZR 8MB with spiffs"*.
+* Set the **Zigbee mode** *"Zigbee ZCZR (coordinator/router)"*.
+* Optional: Set **Core Debug Level** to the desired level such as *"Verbose"* (default is *"None"*).
+* Optional: Set **Erase All Flash Before Sketch Upload** to *"Enabled"* (default is *"Disabled"*).
 
-If the error persists, you can ask for help at the official [ESP32 forum](https://esp32.com) or see [Contribute](#contribute).
+Same as for the XIAO ESP32C6 except for the bigger partition scheme.
 
-## Contribute
+### 4.2. Using pioarduino IDE
 
-To know how to contribute to this project, see [How to contribute.](https://github.com/espressif/arduino-esp32/blob/master/CONTRIBUTING.rst)
+The sketch was successfully compiled with version 55.03.36 of the  [pioarduino-espressif32](https://github.com/pioarduino/platform-espressif32) platform released on January 21, 2026. The platform does not contain a board definition for the XIAO ESP32C5. A board definition, named [seeed_xiao_esp32c5.json](boards/seeed_xiao_esp32c5.json), is provided in the `boards` directory. See the [README](../../../boards/README.md) about the source of that definition.
 
-If you have any **feedback** or **issue** to report on this example/library, please open an issue or fix it by creating a new PR. Contributions are more than welcome!
+This was tested using the [pioarduinoIDE extension](https://marketplace.visualstudio.com/items?itemName=pioarduino.pioarduino-ide) (v1.2.5) which is a fork of the PlatformioIDE extension in [VSCodium](https://vscodium.com/) (Version: 1.108.10359) which is itself a fork of Visual Studio Code.
 
-Before creating a new issue, be sure to try Troubleshooting and check if the same issue was already created by someone else.
+```ini
+[platformio]
+default_envs = seeed_xiao_esp32c5
+;default_envs = seeed_xiao_esp32c6
 
-## Resources
+; Make the Arduino IDE happy (.INO file must be in a directory of the same name)
+src_dir = Zigbee_Dimmable_Light
+boards_dir = ../../boards   ;; .../xiao_esp32c5_sketches/boards/
+lib_dir = ../../libraries   ;; .../xiao_esp32c5_sketches/libraries/
 
-* Official ESP32 Forum: [Link](https://esp32.com)
-* Arduino-ESP32 Official Repository: [espressif/arduino-esp32](https://github.com/espressif/arduino-esp32)
-* ESP32-C6 Datasheet: [Link to datasheet](https://www.espressif.com/sites/default/files/documentation/esp32-c6_datasheet_en.pdf)
-* ESP32-H2 Datasheet: [Link to datasheet](https://www.espressif.com/sites/default/files/documentation/esp32-h2_datasheet_en.pdf)
-* Official ESP-IDF documentation: [ESP-IDF](https://idf.espressif.com)
+[env]
+platform = https://github.com/pioarduino/platform-espressif32/releases/download/stable/platform-espressif32.zip
+framework = arduino
+build_flags =
+  -D ZIGBEE_MODE_ZCZR
+  ;-D CORE_DEBUG_LEVEL=0 ; 0: none, 1: critical, 2: error, 3: info, 4: debug, 5: verbose
+;upload_port = /dev/ttyACM0
+;monitor_port = /dev/ttyACM0
+
+[env:seeed_xiao_esp32c5]
+board = seeed_xiao_esp32c5
+board_build.partitions = zigbee_zczr_8MB.csv
+monitor_speed = 460800
+
+[env:seeed_xiao_esp32c6]
+board = seeed_xiao_esp32c6
+board_build.partitions = zigbee_zczr.csv
+monitor_speed = 460800                 
+```
+
+For core debugging, uncomment `-D CORE_DEBUG_LEVEL=x` in `build_flags` and set `x` to the desired level. By default, the level is 0.
+
+
+## 5. Connecting to a Zigbee2MQTT Coordinator
+
+Assuming that the Zigbee_Dimmable_Light firmware was uploaded to the development board with **Erase All Flash Before Sketch Upload** set to *"Enabled"*, here are the steps to connect to a coordinator for the first time.
+
+It is best to ensure that the Zigbee2MQTT coordinator is the nearest Zigbee coordinator to the ESP32 dev board. 
+
+- Open the Zigbee2MQTT web interface (usually at https:[coordinator_ip]:8080/)
+- Enable end device connections to the zibgee network by clicking on the **[Permit join (All)]** button in the top menu.
+- Power up the development board running the `Zigbee_On_Off_Light` sketch.
+
+After a short while, the board should show up in the Devices table as *Model* `ZBDimLightBulb`, while the *Manufacturer* is listed as `Unsupported`.
+
+<!-- ![](../zigbee2mqtt_devices.jpg) -->
+
+Click on the **Friendly name** so see details about the Zigbee end device and then click on its **Exposes** tab.
+
+<!-- ![](../zigbee2mqtt_state.jpg) -->
+
+Clicking on the **OFF** and **ON** buttons in that view controls the LED of the  ESP32 development board running the Zigbee_On_Off_Light sketch. 
+
+Clicking on the boot button of the development board toggles the state of the onboard LED and the State of the end device is updated accordingly in its **Exposes** tab in the Zigbee2MQTT web interface. 
+
+
+## 6. Troubleshooting
+
+### 6.1. Not Enough Current
+
+The XIAO may be caught in a *boot loop* which is an indication that not enough current is available to the board. The following messages may be printed over and over again in the serial monitor. 
+
+```
+Project: Zigbee Dimmable Light
+  Board: Seeed XIAO ESP32C5
+Antenna: A-01 FPC
+
+Adding ZigbeeLight endpoint to Zigbee Core
+```
+
+At the same time the "Not connected..." message flashes at the top of the serial monitor. If the firmware is compiled with the `Core Debug Level` set to `Debug` in the **Tools** menu, a brownout error might be visible when some of the reboots are starting.
+
+This is more likely to occur if the XIAO is connected through an unpowered USB hub. The solution is to connect the XIAO to a different USB port capable of delivering more power. 
+
+### 6.2. Unable to connect to the Zigbee coordinator
+
+If the Zigbee coordinator is not in pairing mode and the XIAO has never been connected to it, then the XIAO will not be able to connect to the Zigbee network. The XIAO will endlessly print periods after "." saying that it was connectin to the network.
+
+```
+Project: Zigbee Dimmable Light
+  Board: Seeed XIAO ESP32C5
+Antenna: A-01 FPC
+
+Adding ZigbeeLight endpoint to Zigbee Core
+Connecting to network
+..........................................................................................................................................................................................................
+```
+
+If the firware was compiled with e `Core Debug Level` set to `Info` (or `Debug`) then a message indicating that if failed to connect is displayed along with ".".
+
+```
+...[  8369][I][ZigbeeCore.cpp:352] esp_zb_app_signal_handler(): Network steering was not successful (status: ESP_FAIL)
+...[ 11605][I][ZigbeeCore.cpp:352] esp_zb_app_signal_handler(): Network steering was not successful (status: ESP_FAIL)
+...[ 14842][I][ZigbeeCore.cpp:352] esp_zb_app_signal_handler(): Network steering was not successful (status: ESP_FAIL)
+```
+
+The solution is to allow the enable pairing in the Zigbee coordinator. Note that pairing is enabled by default in the Zigbee_On_Off_Switch sketch.
+
+**Other hints**
+
+The [original README](README-org.md) has more troubleshooting advice.
