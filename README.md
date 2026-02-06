@@ -1,6 +1,6 @@
 # XIAO ESP32C5 Sketches
 
-*February 1, 2026*
+*February 5, 2026*
 
 **Arduino source code that accompanies [First Look at the Seeed Studio XIAO ESP32C5](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c5_intro_en.html)**. 
 
@@ -22,6 +22,7 @@
   - [3.6. ./06_wifi](#36-06_wifi)
   - [3.7. ./07_zibgee](#37-07_zibgee)
   - [3.8. ./08_bluetooth](#38-08_bluetooth)
+  - [3.9. Thread and Matter](#39-thread-and-matter)
 - [4. Change Log](#4-change-log)
 - [5. License](#5-license)
 
@@ -93,7 +94,8 @@ Contains 3 sketches that print information to the serial monitor.
  | :--- |  :--- |
  | *sys_info* | Display some information about the ESP32 system.|
  | *pin_names* | Display the mapping of XIAO ESP32C5 Arduino pin names to gpio numbers and some useful macros. |
- | *macs* | Prints out MAC addresses.  |
+ | *macs* | Print out MAC addresses.  |
+ | *heap* | Investigate the heap. |
 
 ### 3.2. ./02_digital_io
 
@@ -157,7 +159,7 @@ Contains examples from the ESP32 Arduino Zigbee library modified to work with th
   
 ### 3.8. ./08_bluetooth
 
-Contains examples from the ESP32 Arduino Zigbee library modified to work with the XIAO ESP32C5 and XIAO ESP32C6<:>
+Contains examples from the ESP32 Arduino BLE library modified to work with the XIAO ESP32C5 and XIAO ESP32C6.
 
  | Project | Description |
  | :--- |  :--- |
@@ -165,11 +167,15 @@ Contains examples from the ESP32 Arduino Zigbee library modified to work with th
  | *server* | Library example (Server.ino)  |
  | *client* |  Library example (Client.ino)  |
 
+### 3.9. Thread and Matter
+
+It was not possible to meaningfully test the Thread and Matter capabilities of the XIAO ESP32C5. However, it is possible to compile and run the example sketches **File/Examples/OpenThread/CLI/ThreadScan.ino** and **File/Examples/OpenThread/CLI/SimpleNode.ino** on a couple of ESP32C5 boards. Just make sure to enable the "PSRAM" option in the `Tools` menu of the Arduino IDE in both cases. The simple Thread node will show up in the scan. If the simple node sketch is replaced with the **File/Examples/Matter/MatterOnOffLight.ino** sketch, the latter will be found by the scanner. Unfortunately, the Matter node can only be commissioned if it is connected to a Thread network which was not available. On the other hand, a XIAO ESP32C6 running the **MatterOnOffLight.ino** sketch could be commissioned because it communicates over a Wi-Fi network (see [Supported Targets](https://github.com/espressif/arduino-esp32/tree/master/libraries/Matter/examples/MatterOnOffLight#supported-targets)).
 
 ## 4. Change Log
 
 | Date | Change |
 | :---  |  :--- | 
+| 2026-02-05 | Added heap example in ./01_info and information about Thread and Matter|
 | 2026-02-01 | Added wifi_connect_time example in ./06_wifi |
 | 2026-01-26 | Added 3rd Zigbee example in ./07_zigbee and tweaked README |
 | 2026-01-26 | Board definition, improved README on Arduino IDE, pioarduino IDE and platforms |
