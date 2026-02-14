@@ -1,6 +1,6 @@
 # XIAO ESP32C5 Sketches
 
-*February 5, 2026*
+*February 13, 2026*
 
 **Arduino source code that accompanies [First Look at the Seeed Studio XIAO ESP32C5](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c5_intro_en.html)**. 
 
@@ -165,7 +165,9 @@ Contains examples from the ESP32 Arduino BLE library modified to work with the X
  | :--- |  :--- |
  | *ble_scan* | Library example (Scan.ino)  |
  | *server* | Library example (Server.ino)  |
- | *client* |  Library example (Client.ino)  |
+ | *client* |  Library example (Client.ino) |
+ | *ble_switch* | Remote BLE switch based on Notify.ino |
+ | *ble_light* | Remote BLE on/off light based on Client.ino |
 
 ### 3.9. Thread and Matter
 
@@ -174,7 +176,8 @@ It was not possible to meaningfully test the Thread and Matter capabilities of t
 ## 4. Change Log
 
 | Date | Change |
-| :---  |  :--- | 
+| :---  |  :--- |
+| 2026-02-13 | Added ble_light and ble_switch to control LED on one board with button on other board using Bluetooth LE |
 | 2026-02-05 | Added heap example in ./01_info and information about Thread and Matter|
 | 2026-02-01 | Added wifi_connect_time example in ./06_wifi |
 | 2026-01-26 | Added 3rd Zigbee example in ./07_zigbee and tweaked README |
