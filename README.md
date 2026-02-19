@@ -1,6 +1,6 @@
 # XIAO ESP32C5 Sketches
 
-*February 13, 2026*
+*February 19, 2026*
 
 **Arduino source code that accompanies [First Look at the Seeed Studio XIAO ESP32C5](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c5_intro_en.html)**. 
 
@@ -39,7 +39,7 @@ The [XIAO ESP32C5](https://www.seeedstudio.com/Seeed-Studio-XIAO-ESP32C5-p-6609.
 
 Each sketch or project in this repository is presented in a way that allows it to be compiled in the Arduino IDE or in the pioarduino IDE or the PlatformIO IDE extensions. 
 
-To compile a sketch in the Arduino IDE click on the **Open** option in the **File** menu and navigate to and select the desired file with the `.ino` extension with the system file manager. Alternately, click on the **Sketchbook** option and navigate to the desired sketch in the sub-menu tree ([screen capture](images/arduino_sketchbook.jpg)). The IDE must be configured as explained in the [Arduino IDE](#21-arduino-ide) section below.
+To compile a sketch in the Arduino IDE click on the **Open** option in the **File** menu and navigate to and select the desired file with the `.ino` extension with the system file manager. Alternately, click on the **Sketchbook** option and navigate to the desired sketch in the submenu tree ([screen capture](images/arduino_sketchbook.jpg)). The IDE must be configured as explained in the [Arduino IDE](#21-arduino-ide) section below.
 
 To compile a project in the piaorduino IDE extension (or maybe the PlatformIO IDE), click on the home icon in the status bar at the bottom, then on the **[Open Project]** button and then navigate to the project's directory which contains its `platformio.ini` file. Click on the **[Open "&lt;project&gt;"]** button. The IDE must be configured as explained in the [pioarduinoIDE](#22-pioarduinoide) section below.
 
@@ -70,17 +70,16 @@ When the repository is downloaded as an archive, its top-level directory is name
 
 ### 2.2. pioarduinoIDE
 
-All of the sketches in the repository have been successfully compiled with the [pioarduino-espressif32](https://github.com/pioarduino/platform-espressif32) platform. The January 21, 2026 version of [pioarduino/platform-espressif Release 55.03.36 Arduino Release v3.3.6 based on ESP-IDF v5.5.2.260116](https://github.com/pioarduino/platform-espressif32/releases/tag/55.03.36) was used. 
+All of the sketches in the repository have been successfully compiled with the [pioarduino-espressif32](https://github.com/pioarduino/platform-espressif32) platform. The January 21, 2026 version of [pioarduino/platform-espressif Release 55.03.36 Arduino Release v3.3.6 based on ESP-IDF v5.5.2.260116](https://github.com/pioarduino/platform-espressif32/releases/tag/55.03.36) was used initially. All projects should compile without problems with the newest version of the platform (55.03.37 based on v3.3.7 of the ESP32 Arduino core) but this has been tested with only a few projects.
 
-The platform does not contain a board definition for the XIAO ESP32C5. A board definition, named [seeed_xiao_esp32c5.json](boards/seeed_xiao_esp32c5.json), is provided in the `boards` directory. See the [README](../../../boards/README.md) about the source of that definition. 
+The stable release of the platform does not yet contain a board definition for the XIAO ESP32C5. A [seeed_xiao_esp32c5.json](boards/seeed_xiao_esp32c5.json) manifest is available in the `develop` branch of the platform. A local copy is provided in the `boards` directory to use with the current stable release (see the [boards/README](boards/README.md) for more information). 
 
 Many projects use a local `MACs` library function or macro to print out an interface MAC address. The library is in the `libraries` directory.
 
-The correct values of the `platform`, `framework`, `boards_dir`, `lib_dir` and `src_dir` parameters are defined in the `platformio.ini` configuration file of each example project in the repository. Each project should compile *as is* in the pioarduinoIDE.
+The correct values of the `platform`, `framework`, `boards_dir`, `lib_dir` and `src_dir` parameters are defined in the `platformio.ini` configuration file of each example project in the repository. Each project should compile *as is* in the pioarduinoIDE so long as the directory structure is not changed which requires including the `boards` and `libraries` directories.
 
 This was tested using the [pioarduinoIDE extension](https://marketplace.visualstudio.com/items?itemName=pioarduino.pioarduino-ide) (v1.2.5) which is a fork of the PlatformioIDE extension in [VSCodium](https://vscodium.com/) (Version: 1.108.10359) which is itself a fork of Visual Studio Code. Note that the PlatformioIDE extension is not available in the VSCodium marketplace and its manual installation is not easily done because the VSIX package is not readily found anymore.
 
-> In principle, it should be possible to use the [Seeed-Studio platform-seeedboards](https://github.com/Seeed-Studio/platform-seeedboards) platform instead of the pioarduino platform-espressif32 in either the pioarduinoIDE or PlatformioIDE extensions. However it was somewhat difficult, but not impossible, to do that in cursory tests because of missing libraries in the Python virtual environment created by the IDE extension. 
 
 ## 3. Sketches/Projects
 
@@ -177,6 +176,7 @@ It was not possible to meaningfully test the Thread and Matter capabilities of t
 
 | Date | Change |
 | :---  |  :--- |
+| 2026-02-19 | Minor improvements, and board definition now in `develop` branch of `platform-espressif32`
 | 2026-02-13 | Added ble_light and ble_switch to control LED on one board with button on other board using Bluetooth LE |
 | 2026-02-05 | Added heap example in ./01_info and information about Thread and Matter|
 | 2026-02-01 | Added wifi_connect_time example in ./06_wifi |
@@ -187,7 +187,6 @@ It was not possible to meaningfully test the Thread and Matter capabilities of t
 | 2026-01-20 | Sleep sketches |
 | 2026-01-19 | Link to post and corrections to readmes|
 | 2026-01-17 | Initial version |
-
 
 ## 5. License
 
