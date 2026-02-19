@@ -97,6 +97,11 @@ void iopins(void) {
   Serial.println("  ARDUINO_XIAO_ESP32C5 defined"); // of course, see top of file
   
   Serial.println("\nNative USB support");
+  #ifdef ARDUINO_USB_MODE
+  Serial.printf("  ARDUINO_USB_MODE is defined and equal to %d\n", ARDUINO_USB_MODE);
+  #else
+  Serial.println("  ARDUINO_USB_MODE is not defined");
+  #endif
   #ifdef ARDUINO_USB_CDC_ON_BOOT
   Serial.printf("  ARDUINO_USB_CDC_ON_BOOT is defined and equal to %d\n", ARDUINO_USB_CDC_ON_BOOT);
   #else
