@@ -48,42 +48,28 @@
   #error An ESP32 based board is required
 #endif  
 
-#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 4))    
-  #error ESP32 Arduino core version 3.3.4 or newer needed
+#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 6))    
+  #error ESP32 Arduino core version 3.3.6 or newer needed
 #endif 
 
 #if !defined(CONFIG_SOC_IEEE802154_SUPPORTED)
   #error The SoC must support IEEE 802.15.4 (Zigbee)
 #endif
 
-#if !defined(SERIAL_BEGIN_DELAY)
-  #if defined(PLATFORMIO)
-    #define SERIAL_BEGIN_DELAY 5000    // 5 seconds
-  #elif (ARDUINO_USB_CDC_ON_BOOT > 0)
-    #define SERIAL_BEGIN_DELAY 2000    // 2 seconds
-  #else
-    #define SERIAL_BEGIN_DELAY 1000    // 1 second
-  #endif
-#endif 
-
 //---- Identify the ESP32 board and antenna ----
 
-#if defined(ARDUINO_XIAO_ESP32C5)
-  #define TITLE "Seeed XIAO ESP32C5"
-  #define ANTENNA "A-01 FPC"
-#elif defined(ARDUINO_XIAO_ESP32C6)
+#if defined(ARDUINO_XIAO_ESP32C6)
   // The onboard ceramic antenna is used by default.
   #define TITLE "Seeed XIAO ESP32C6"
   #ifdef USE_EXTERNAL_ANTENNA 
     #define ANTENNA "EXTERNAL"
   #else
-    #define ANTENNA "INTERNAL CERAMIC"
+    #define ANTENNA "ONBOARD CERAMIC"
   #endif
-#elif defined(ESP32)
+#elif defined(ARDUINO_BOARD)
+  #define TITLE ARDUINO_BOARD
+#else
   #define TITLE "Unknown ESP32 board"
-  #define ANTENNA "Unknown"
-#else  
-  #error "An ESP32 SoC required"
 #endif        
 
 
@@ -99,7 +85,7 @@
   #if !defined(LED_PIN)
     #define LED_PIN LED_BUILTIN
   #endif
-  #if !defined(LED_LOW)
+  #if !defined(LED_ON)
     #define LED_ON LOW          // because I/O pin must be grounded to turn on LED
   #endif
 #endif
@@ -141,6 +127,16 @@ void setLED(bool value) {
 
 /********************* Arduino functions **************************/
 void setup() {
+  #if !defined(SERIAL_BEGIN_DELAY)
+    #if defined(PLATFORMIO)
+      #define SERIAL_BEGIN_DELAY 5000    // 5 seconds
+    #elif (ARDUINO_USB_CDC_ON_BOOT > 0)
+      #define SERIAL_BEGIN_DELAY 2000    // 2 seconds
+    #else
+      #define SERIAL_BEGIN_DELAY 1000    // 1 second
+    #endif
+  #endif 
+
   #if (ARDUINO_USB_CDC_ON_BOOT > 0)
   Serial.begin();
   delay(SERIAL_BEGIN_DELAY);
@@ -157,7 +153,9 @@ void setup() {
 
   Serial.println("\n\n     Project: Zigbee On/Off Light");
   Serial.printf("       Board: %s\n", TITLE);
+  #ifdef ANTENNA
   Serial.printf("     Antenna: %s\n", ANTENNA);
+  #endif
   Serial.printf("IEEE Address: %s\n\n", ZIGBEE_MAC_STR);
 
   // Init LED and turn it OFF (if LED_PIN == RGB_BUILTIN, the rgbLedWrite() will be used under the hood)
@@ -185,12 +183,21 @@ void setup() {
     Serial.println("Rebooting...");
     ESP.restart();
   }
+  int attempts = 0;
   Serial.println("Connecting to network");
   while (!Zigbee.connected()) {
+    if (attempts > 64) {
+      Serial.println("\nHaving difficulty connecting. May need to erase the flash");
+      Serial.println("memory before uploading the firmware and may need to reboot");
+      Serial.println("the Zigbee On_Off_Switch");
+      attempts = 0;
+    } else {
+      attempts++;
+    }
     Serial.print(".");
     delay(100);
   }
-  Serial.println("\nsetup() completed.");
+  Serial.println("\nConnected.");
   Serial.println("Toggle the onboard LED with short boot button presses.");
   Serial.println("Perform a Zigbee factory reset and SoC reset with a");
   Serial.println("long boot button press that is longer than 3 seconds.");
