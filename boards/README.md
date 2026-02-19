@@ -2,7 +2,7 @@
 
 The latest stable (55.03.36) branch of the [pioarduino](https://github.com/pioarduino/platform-espressif32) platform does not contain a board definition for the XIAO ESP32C5. This directory contains the current (2026-02-02) board definition file from the Seeed Studio [platform-seeedboards](https://github.com/Seeed-Studio/platform-seeedboards) repository named [seeed-xiao-esp32-c5.json](https://github.com/Seeed-Studio/platform-seeedboards/blob/main/boards/seeed-xiao-esp32-c5.json). Many thanks for the speedy [confirmation from StarSphere-1024](https://github.com/Seeed-Studio/platform-seeedboards/issues/32#issuecomment-3839244558).
 
-The [seeed_xiao_esp32c5.json](seeed_xiao_esp32c5.json) definition in this directory is a renamed copy of the [seeed-xiao-esp32-c5.json](seeed-xiao-esp32-c5.json) to match the naming convention of the other Seeed Studio XIAO boards in [platform-espressif32/boards] at [pioarduino](https://github.com/pioarduino/platform-espressif32/tree/main/boards) and [platformio](https://github.com/platformio/platform-espressif32/tree/develop/boards).
+The [seeed_xiao_esp32c5.json](seeed_xiao_esp32c5.json) definition in this directory is renamed to match the naming convention of the other Seeed Studio XIAO boards in [platform-espressif32/boards] at [pioarduino](https://github.com/pioarduino/platform-espressif32/tree/main/boards) and [platformio](https://github.com/platformio/platform-espressif32/tree/develop/boards). It also contains some [modifications as suggested by the piarduino team](https://github.com/pioarduino/platform-espressif32/pull/393) notably to ensure compatibility with the ESP-IDF framework.
 
 To use this board definition in a PlatformIO project, add the following line in the `[platformio]` section of the project configuration file: 
 
@@ -56,7 +56,7 @@ lib_dir = ../../libraries   ;; .../xiao_esp32c5_sketches/libraries/
 [env:seeed_xiao_esp32c5]
 platform = https://github.com/pioarduino/platform-espressif32/releases/download/stable/platform-espressif32.zip
 board = seeed_xiao_esp32c5
-build_flags = 
+build_flags =
   -UBOARD_HAS_PSRAM
   -DCORE_DEBUG_LEVEL=4 ; options: 5 verbose, 4 debug, 3 info, 2 error, 1 critical, 0 none (default)
 framework = arduino
