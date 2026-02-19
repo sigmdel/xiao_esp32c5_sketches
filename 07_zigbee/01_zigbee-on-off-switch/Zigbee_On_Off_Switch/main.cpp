@@ -18,7 +18,7 @@
 ///
 ///  GPIO pin used by a push button that is connected to GROUND.
 ///  Define here to overide the automatic use of the BOOT button.
-///#define BOOT_PIN xxxx
+///#define BOOT_PIN 9
 ///
 ///  Rate of USB to Serial chip if used on the development board.
 ///  This is ignored when the native USB peripheral of the 
@@ -40,8 +40,8 @@
   #error An ESP32 based board is required
 #endif  
 
-#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 4))    
-  #error ESP32 Arduino core version 3.3.4 or newer needed
+#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 6))    
+  #error ESP32 Arduino core version 3.3.6 or newer needed
 #endif 
 
 #if !defined(CONFIG_SOC_IEEE802154_SUPPORTED)
@@ -60,22 +60,18 @@
 
 //---- Identify the ESP32 board and antenna ----
 
-#if defined(ARDUINO_XIAO_ESP32C5)
-  #define TITLE "Seeed XIAO ESP32C5"
-  #define ANTENNA "A-01 FPC"
-#elif defined(ARDUINO_XIAO_ESP32C6)
+#if defined(ARDUINO_XIAO_ESP32C6)
   // The onboard ceramic antenna is used by default.
   #define TITLE "Seeed XIAO ESP32C6"
   #ifdef USE_EXTERNAL_ANTENNA 
     #define ANTENNA "EXTERNAL"
   #else
-    #define ANTENNA "INTERNAL CERAMIC"
+    #define ANTENNA "ONBOARD CERAMIC"
   #endif
-#elif defined(ESP32)
+#elif defined(ARDUINO_BOARD)
+  #define TITLE ARDUINO_BOARD
+#else
   #define TITLE "Unknown ESP32 board"
-  #define ANTENNA "Unknown"
-#else  
-  #error "An ESP32 SoC required"
 #endif        
 
 
@@ -197,7 +193,9 @@ void setup() {
 
   Serial.println("\n\n     Project: Zigbee On/Off Switch");
   Serial.printf("       Board: %s\n", TITLE);
+  #ifdef ANTENNA
   Serial.printf("     Antenna: %s\n", ANTENNA);
+  #endif
   Serial.printf("IEEE Address: %s\n\n", ZIGBEE_MAC_STR);
 
   //Optional: set Zigbee device name and model
