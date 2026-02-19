@@ -2,6 +2,61 @@
  *  See deep_sleep_io.ino for license and attribution.
  */
 
+/**************************************************************
+OPERATION
+  Each time the board wakes up from deep sleep, it executes the
+  setup() function. Near the end of the setup() function, the
+  board is put into deep sleep. Consequently the loop() function
+  is never executed and anything in the setup() function after 
+  when deep sleep is enabled will also not be executed.
+
+  The board is woken from deep sleep mode by setting a LP GPIO 
+  pin either HIGH or LOW. A prompt on the serial monitor will 
+  give instructions as to which pin to activate and the needed
+  signal to wake the board:
+
+    Boot number: 1
+    Wakeup was not caused by deep sleep: 0
+
+    *** For this round, wake the SoC from sleep mode by setting the wake pin HIGH ***
+
+    Wake the SoC by setting LP_GPIO0 [D0] HIGH.
+    Going to sleep now
+
+NOTE
+  The sketch can report the state of the machine to the 
+  serial monitor. However, the serial peripheral is shut
+  down when the SoC goes into sleep mode. That means 
+  that the serial port has to be reopened when comming
+  out of sleep mode. The Arduino IDE automatically 
+  reconnects to the serial port quickly enough that 
+  the messages from the sketch will be seen. In 
+  PlatformIO it is necessary to manually reconnect 
+  to the SoC built-in USB of the SoC so that it may 
+  not be possible to see the messages.
+
+WARNING
+  The Deep sleep mode section of the Getting started Wiki for the XIAO ESP32C5 
+  @ https://wiki.seeedstudio.com/xiao_esp32c5_getting_started/#deep-sleep-mode
+  contains a CAUTION
+
+    The XIAO ESP32-C5 supports GPIO wake-up and timer wake-up. To prevent the 
+    loss of hardware debugging capabilities and increased difficulty in firmware 
+    flashing during low-power development, it is strongly recommended that the 
+    JTAG (MTMS, MTDI, MTCK, MTDO) pins be reserved for dedicated use and not [be]
+    employed as wake-up sources for deep sleep mode.
+
+  Presumably, the "increased difficulty in firmware flashing" refers to the need
+  to put the board back into bootloader mode to upload a new firmware. Unless 
+  one's timing is perfect, meaning the firmware upload happens to begin when the
+  board is awake and printing instructions on the serial monitor, it will be
+  necessary to manually enable the bootloader mode no matter which wake up pin 
+  is being used. 
+  
+  Restricting the use of the JTAG pins for their "dedicated use" is valid when one 
+  is using hardware debugging.
+*************************************************************/
+
 #include <Arduino.h>
 
 //////// User configuration //////
@@ -196,4 +251,6 @@ void setup() {
   Serial.println("This will never be printed");
 }
 
-void loop() { };
+void loop() { 
+  Serial.println("This is the loop talking. Should never happen.");   
+};
